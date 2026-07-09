@@ -1,3 +1,9 @@
+-- 强制本次会话使用 utf8mb4。
+-- Windows 中文环境下 mysql.exe 的 character_set_client 默认是 gbk，
+-- 直接 `mysql -u root -p db < 本文件` 会把 UTF-8 的中文按 GBK 解释后入库，
+-- 存进去就是乱码。用 GBK 客户端查回来看着还是对的，只有应用（utf8mb4）读时才暴露。
+SET NAMES utf8mb4;
+
 -- =============================================
 -- 探校之旅 —— 核心表（T6：认证与用户，后端 A 负责）
 --
