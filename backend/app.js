@@ -11,6 +11,7 @@ const storyRoutes = require('./routes/storyRoutes');
 const badgeRoutes = require('./routes/badgeRoutes');
 const saveSlotRoutes = require('./routes/saveSlotRoutes');
 const processMarkerRoutes = require('./routes/processMarkerRoutes');
+const mapRoutes = require('./routes/mapRoutes');
 
 // 引入中间件
 const errorHandler = require('./middlewares/errorHandler');
@@ -29,7 +30,8 @@ app.use(express.json());
 // 必须先于所有路由注册：路由处理器和 auth 中间件都会调用 res.success / res.fail
 app.use((req, res, next) => {
   res.success = (data, message) => success(res, data, message);
-  res.fail = (code, message, details) => fail(res, code, message, details);
+  // httpStatus 必须透传：认证失败要 401、越权要 403（FN-11-08 / BR-26）
+  res.fail = (code, message, details, httpStatus) => fail(res, code, message, details, httpStatus);
   next();
 });
 
@@ -41,6 +43,7 @@ app.use('/api/stories', storyRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/save-slots', saveSlotRoutes);
 app.use('/api/process-markers', processMarkerRoutes);
+app.use('/api/maps', mapRoutes);
 
 // 4. 根路径测试
 app.get('/', (req, res) => {
