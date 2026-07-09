@@ -1,35 +1,29 @@
-
 const db = require('../config/db');
 
 const Badge = {
-  // 获取所有勋章定义
-  async findAll() {
-    const [rows] = await db.query('SELECT * FROM badges ORDER BY id');
+  // 勋章墙要展示全部 4 枚（含未获得的灰色显示），故不按剧情 status 过滤
+  async listAll() {
+    const [rows] = await db.query('SELECT * FROM badges ORDER BY sort_order, id');
     return rows;
   },
 
-  // 根据ID获取勋章
   async findById(id) {
     const [rows] = await db.query('SELECT * FROM badges WHERE id = ?', [id]);
-    return rows[0];
+    return rows[0] || null;
   },
 
-  // 获取用户已获得的勋章ID列表
-  async getUserBadgeIds(userId) {
+  async listObtainedIds(userId) {
     const [rows] = await db.query(
       'SELECT badge_id FROM user_badges WHERE user_id = ?',
       [userId]
     );
-    return rows.map(row => row.badge_id);
+    return rows.map((r) => r.badge_id);
   },
 
-  // 授予用户勋章（幂等）
-  async grantToUser(userId, badgeId, storyId) {
-    const [result] = await db.query(
-      'INSERT IGNORE INTO user_badges (user_id, badge_id, story_id) VALUES (?, ?, ?)',
-      [userId, badgeId, storyId]
-    );
-    return result.affectedRows > 0; // 是否新授予
+  // 后台统计：勋章发放总数（历史累计，(user_id,badge_id) 联合主键天然去重）
+  async countAllObtained() {
+    const [rows] = await db.query('SELECT COUNT(*) AS total FROM user_badges');
+    return rows[0].total;
   }
 };
 

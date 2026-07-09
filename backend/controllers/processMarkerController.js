@@ -1,21 +1,16 @@
 const ProcessMarker = require('../models/ProcessMarker');
-const UserStoryProgress = require('../models/UserStoryProgress');
+const StoryProgress = require('../models/StoryProgress');
+const dto = require('../utils/dto');
 
+// GET /api/process-markers
+// completed 按当前用户计算：同一批标记，各人看到的勾 / 感叹号不同。
+// V1.0 只返回医保报销一个标记，card / print 在种子数据里 status='hidden'
+// （待澄清事项 Q-09 的结论：本期隐藏这两个入口）。
 exports.getMarkers = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const markers = await ProcessMarker.findAll();
-
-    // 获取用户已完成的短故事ID
-    const completedStoryIds = await UserStoryProgress.getCompletedStoryIds(userId);
-
-    // 为每个标记添加 completed 状态
-    const result = markers.map(marker => ({
-      ...marker,
-      completed: completedStoryIds.includes(marker.short_story_id)
-    }));
-
-    res.success(result);
+    const markers = await ProcessMarker.listVisible();
+    const completed = new Set(await StoryProgress.listCompletedStoryIds(req.user.id));
+    res.success(markers.map((m) => dto.toMarker(m, completed.has(m.short_story_id))));
   } catch (err) {
     next(err);
   }
