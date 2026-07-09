@@ -8,6 +8,9 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const storyRoutes = require('./routes/storyRoutes');
+const badgeRoutes = require('./routes/badgeRoutes');
+const saveSlotRoutes = require('./routes/saveSlotRoutes');
+const processMarkerRoutes = require('./routes/processMarkerRoutes');
 
 // 引入中间件
 const errorHandler = require('./middlewares/errorHandler');
@@ -21,6 +24,9 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use('/api/badges', badgeRoutes);
+app.use('/api/save-slots', saveSlotRoutes);
+app.use('/api/process-markers', processMarkerRoutes);
 
 // 2. 挂载自定义响应方法 (让 res.success 和 res.fail 可用)
 app.use((req, res, next) => {

@@ -6,6 +6,7 @@ const auth = require('../middlewares/auth'); // 复用认证中间件！
 router.get('/', auth, storyController.getStoryList);
 // 获取详情（需登录）
 router.get('/:id', auth, storyController.getStoryDetail);
-
+// 完成故事（需登录）
+router.post('/:id/complete', auth, storyController.completeStory);
 // TODO: 任晟达后续在这里补充 POST /complete, POST /save 等
 module.exports = router;
