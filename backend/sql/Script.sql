@@ -42,15 +42,22 @@ CREATE TABLE IF NOT EXISTS `admins` (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员账号';
 
--- 默认管理员：admin / 123456（与《原型说明》4.3、8.3 记载的演示账号一致）
--- 修正：原先写入的 hash（$2b$10$MzyexXCjq...946m）经 bcrypt.compareSync 验证并非 123456，
---       导致管理员无法登录后台。此处重新生成。
+-- 默认管理员：admin / rjks@bjut514
+--
+-- 演示账号原为 admin / 123456（《原型说明》4.3、8.3、常见问题 Q3），但纯数字密码
+-- 不符合待澄清事项 Q-17 对管理员密码复杂度的要求，且本仓库公开、hash 可被离线爆破。
+-- 现由后端 A 统一改为 rjks@bjut514，请求需求组同步修订原型说明中的演示账号。
 INSERT IGNORE INTO admins (username, password_hash)
-VALUES ('admin', '$2b$10$IgAvRevhQ7DgnsUzKv1Lcu9ktF66zxOdpDyHD9a/Y8leHG8DmCxvm');
+VALUES ('admin', '$2b$10$6e5oZXvTGqFC2NOPnes1kegy8rb4aUThZ4lQo5I.MaUESI0c9lvxe');
 
--- 若库中已存在旧的错误 hash，一并修复（便于队友直接重跑本脚本）
+-- 库中若残留任一版本的旧 hash，重跑本脚本即可自动修复并解除锁定
 UPDATE admins
-SET password_hash = '$2b$10$IgAvRevhQ7DgnsUzKv1Lcu9ktF66zxOdpDyHD9a/Y8leHG8DmCxvm',
+SET password_hash = '$2b$10$6e5oZXvTGqFC2NOPnes1kegy8rb4aUThZ4lQo5I.MaUESI0c9lvxe',
     failed_count = 0, locked_until = NULL
 WHERE username = 'admin'
-  AND password_hash = '$2b$10$MzyexXCjqXOUXQX8CLnelOi2namly3jkNRt2srr.ITfYQ7waZ946m';
+  AND password_hash IN (
+    -- 最初写入的 hash，经 compareSync 验证不对应任何常见密码，管理员根本登不进后台
+    '$2b$10$MzyexXCjqXOUXQX8CLnelOi2namly3jkNRt2srr.ITfYQ7waZ946m',
+    -- 中间修正为 123456 的 hash
+    '$2b$10$IgAvRevhQ7DgnsUzKv1Lcu9ktF66zxOdpDyHD9a/Y8leHG8DmCxvm'
+  );
