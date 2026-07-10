@@ -2,8 +2,8 @@ const router = require('express').Router();
 const saveSlotController = require('../controllers/saveSlotController');
 const auth = require('../middlewares/auth');
 
-router.post('/', auth, saveSlotController.save);
 router.get('/', auth, saveSlotController.list);
-router.delete('/:slotId', auth, saveSlotController.delete);
+router.post('/', auth, saveSlotController.save);
+router.delete('/:slotId', auth, saveSlotController.remove);
 
 module.exports = router;

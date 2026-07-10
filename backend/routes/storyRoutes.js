@@ -1,12 +1,11 @@
 const router = require('express').Router();
 const storyController = require('../controllers/storyController');
-const auth = require('../middlewares/auth'); // 复用认证中间件！
+const auth = require('../middlewares/auth');
 
-// 获取列表（需登录）
-router.get('/', auth, storyController.getStoryList);
-// 获取详情（需登录）
-router.get('/:id', auth, storyController.getStoryDetail);
-// 完成故事（需登录）
+// 更具体的路径写在前面，避免被 /:id 抢先匹配
+router.get('/', auth, storyController.listStories);
+router.get('/:id/nodes', auth, storyController.getNodes);
 router.post('/:id/complete', auth, storyController.completeStory);
-// TODO: 任晟达后续在这里补充 POST /complete, POST /save 等
+router.get('/:id', auth, storyController.getStoryDetail);
+
 module.exports = router;

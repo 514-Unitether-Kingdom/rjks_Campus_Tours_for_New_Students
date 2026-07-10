@@ -1,42 +1,66 @@
 const db = require('../config/db');
 
+// 前端以 code 调用（campus / medical），后台以自增 id 调用也应支持
+const isNumericId = (ref) => /^\d+$/.test(String(ref));
+
 const Story = {
-  // ---------- 基础查询（已存在） ----------
-  // 获取所有启用的剧情
-  async findAll() {
-    const [rows] = await db.query('SELECT * FROM stories WHERE status = "enabled"');
+  // 按 code 或自增 id 查找。前端 campus-story.js 写死 getStoryNodes('campus')，
+  // 若只按自增 id 查，parseInt('campus') 得到 NaN，会永远返回"剧情不存在"。
+  async findByRef(ref) {
+    const sql = isNumericId(ref)
+      ? 'SELECT * FROM stories WHERE id = ?'
+      : 'SELECT * FROM stories WHERE code = ?';
+    const [rows] = await db.query(sql, [ref]);
+    return rows[0] || null;
+  },
+
+  // 前端可见的剧情列表。type 可选：'long' / 'short'
+  async listEnabled(type) {
+    const params = [];
+    let sql = "SELECT * FROM stories WHERE status = 'enabled'";
+    if (type) { sql += ' AND type = ?'; params.push(type); }
+    sql += ' ORDER BY id';
+    const [rows] = await db.query(sql, params);
     return rows;
   },
 
-  // 根据ID获取单个剧情
-  async findById(id) {
-    const [rows] = await db.query('SELECT * FROM stories WHERE id = ?', [id]);
-    return rows[0];
+  // 后台预览与导出需要包含 disabled 的剧情（F-12：预览全部剧情内容）
+  async listAll() {
+    const [rows] = await db.query('SELECT * FROM stories ORDER BY id');
+    return rows;
   },
 
-  // ---------- 新增方法（供后续功能使用） ----------
-  // 获取剧情及其所有节点（按顺序）
-  async findWithNodes(id) {
-    const story = await this.findById(id);
-    if (!story) return null;
-    const [nodes] = await db.query(
+  // 按 sort_order 返回节点。fromNodeKey 用于读档续读：只返回该节点及之后的部分。
+  // 注：当前前端一次性拉全部节点再自行 seek，故该参数默认不传。
+  async listNodes(storyId, fromNodeKey) {
+    const [rows] = await db.query(
       'SELECT * FROM story_nodes WHERE story_id = ? ORDER BY sort_order',
-      [id]
+      [storyId]
     );
-    story.nodes = nodes;
-    return story;
+    if (!fromNodeKey) return rows;
+    const idx = rows.findIndex((n) => n.node_key === fromNodeKey);
+    return idx === -1 ? rows : rows.slice(idx);
   },
 
-  // 检查剧情是否为长故事
-  async isLongStory(id) {
-    const [rows] = await db.query('SELECT type FROM stories WHERE id = ?', [id]);
-    return rows.length > 0 && rows[0].type === 'long';
+  async findNodeByKey(storyId, nodeKey) {
+    const [rows] = await db.query(
+      'SELECT * FROM story_nodes WHERE story_id = ? AND node_key = ?',
+      [storyId, nodeKey]
+    );
+    return rows[0] || null;
   },
 
-  // 获取剧情关联的勋章ID
-  async getBadgeId(id) {
-    const [rows] = await db.query('SELECT badge_id FROM stories WHERE id = ?', [id]);
-    return rows.length > 0 ? rows[0].badge_id : null;
+  async findEndNodeId(storyId) {
+    const [rows] = await db.query(
+      'SELECT id FROM story_nodes WHERE story_id = ? AND is_end = 1 ORDER BY sort_order LIMIT 1',
+      [storyId]
+    );
+    return rows.length ? rows[0].id : null;
+  },
+
+  async countAll() {
+    const [rows] = await db.query('SELECT COUNT(*) AS total FROM stories');
+    return rows[0].total;
   }
 };
 
