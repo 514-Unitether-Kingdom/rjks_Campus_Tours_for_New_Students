@@ -1,0 +1,9 @@
+<view class="story-container" bindtap="onTap">
+  <image class="bg" src="{{currentNode.bg}}" mode="aspectFill"></image>
+  <view class="character">{{currentNode.character || ''}}</view>
+  <view class="dialog">{{currentNode.text || ''}}</view>
+  <!-- 历史对话按钮 -->
+  <view class="history-btn" catchtap="showHistory">查看历史</view>
+  <!-- 存档按钮（仅长故事） -->
+  <view class="save-btn" wx:if="{{canSave}}" catchtap="onSave">保存进度</view>
+</view>

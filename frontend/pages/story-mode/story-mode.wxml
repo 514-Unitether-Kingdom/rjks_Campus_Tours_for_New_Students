@@ -1,0 +1,58 @@
+<view class="story-mode-container">
+  <view class="header-area">
+    <text class="page-title">📖 故事模式</text>
+    <text class="page-subtitle">选择你感兴趣的剧情，开始探索吧</text>
+  </view>
+
+  <view class="story-list">
+    <!-- 浏览校园 - 长故事 -->
+    <view class="story-card" bindtap="goCampusStory">
+      <view class="story-card-left">
+        <!-- 🏫 使用图片：/images/story_campus_icon.png -->
+        <image class="story-icon" src="/images/story_campus_icon.png" mode="aspectFit"></image>
+        <view class="story-badge">长故事</view>
+      </view>
+      <view class="story-card-right">
+        <text class="story-name">🏛️ 浏览校园</text>
+        <text class="story-desc">跟随学姐的脚步，探索北工大每个角落</text>
+        <view class="story-tags">
+          <text class="tag tag-blue">支持存档</text>
+          <text class="tag tag-green">约15分钟</text>
+        </view>
+      </view>
+      <text class="story-arrow">›</text>
+    </view>
+
+    <!-- 办事流程 - 短故事 -->
+    <view class="story-card" bindtap="goProcessSelect">
+      <view class="story-card-left">
+        <!-- 📋 使用图片：/images/story_process_icon.png -->
+        <image class="story-icon" src="/images/story_process_icon.png" mode="aspectFit"></image>
+        <view class="story-badge story-badge-orange">短故事</view>
+      </view>
+      <view class="story-card-right">
+        <text class="story-name">📋 办事流程</text>
+        <text class="story-desc">了解医保报销等校园办事流程</text>
+        <view class="story-tags">
+          <text class="tag tag-orange">不支持存档</text>
+          <text class="tag tag-green">约5分钟</text>
+        </view>
+      </view>
+      <text class="story-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 底部功能按钮 -->
+  <view class="action-row">
+    <view class="action-btn" bindtap="goBadges">
+      <!-- 🏅 使用图片：/images/icon_badge.png -->
+      <image class="action-icon" src="/images/icon_badge.png" mode="aspectFit"></image>
+      <text>查看勋章</text>
+    </view>
+    <view class="action-btn" bindtap="goSaves">
+      <!-- 💾 使用图片：/images/icon_save.png -->
+      <image class="action-icon" src="/images/icon_save.png" mode="aspectFit"></image>
+      <text>查看存档</text>
+    </view>
+  </view>
+</view>

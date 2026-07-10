@@ -1,0 +1,23 @@
+<view class="login-container">
+  <!-- 顶部装饰区域 -->
+  <view class="header-area">
+    <view class="logo-wrapper">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    </view>
+    <text class="app-title">新生探校之旅</text>
+    <text class="app-subtitle">游戏化校园引导</text>
+  </view>
+
+  <!-- 登录按钮区域 -->
+  <view class="login-area">
+    <button class="btn-login" bindtap="handleLogin" loading="{{loggingIn}}" disabled="{{checking || loggingIn}}">
+      {{checking ? '检查登录状态...' : '微信授权登录'}}
+    </button>
+    <text class="login-tip">首次登录需要授权</text>
+  </view>
+
+  <!-- 底部版权信息 -->
+  <view class="footer">
+    <text class="footer-text">北京工业大学 · 平乐园校区</text>
+  </view>
+</view>

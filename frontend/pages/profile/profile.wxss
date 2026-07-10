@@ -1,0 +1,145 @@
+page {
+    background: linear-gradient(180deg, #F0F7FF 0%, #FFFFFF 100%);
+    min-height: 100vh;
+  }
+  
+  .profile-container {
+    padding: 40rpx 60rpx 80rpx;
+  }
+  
+  /* ===== 头部 ===== */
+  .header-area {
+    text-align: center;
+    padding: 40rpx 0 60rpx;
+  }
+  
+  .page-title {
+    display: block;
+    font-size: 48rpx;
+    font-weight: bold;
+    color: #2C3E50;
+    margin-bottom: 16rpx;
+  }
+  
+  .page-subtitle {
+    font-size: 28rpx;
+    color: #7F8C8D;
+  }
+  
+  /* ===== 表单卡片 ===== */
+  .form-card {
+    background: #FFFFFF;
+    border-radius: 24rpx;
+    padding: 40rpx 32rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+    margin-bottom: 60rpx;
+  }
+  
+  .form-item {
+    margin-bottom: 36rpx;
+  }
+  
+  .form-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .label {
+    display: block;
+    font-size: 28rpx;
+    color: #4A5568;
+    font-weight: 500;
+    margin-bottom: 16rpx;
+  }
+  
+  .required {
+    color: #E74C3C;
+  }
+  
+  .input {
+    width: 100%;
+    height: 80rpx;
+    border-bottom: 2rpx solid #E8EEF5;
+    font-size: 30rpx;
+    padding: 0 10rpx;
+    color: #2D3748;
+    transition: border-color 0.3s;
+  }
+  
+  .input:focus {
+    border-bottom-color: #4A90D9;
+  }
+  
+  /* ===== 性别 ===== */
+  .gender-group {
+    display: flex;
+    gap: 60rpx;
+    padding: 10rpx 0;
+  }
+  
+  .gender-option {
+    display: flex;
+    align-items: center;
+  }
+  
+  .gender-text {
+    font-size: 30rpx;
+    color: #2D3748;
+    margin-left: 12rpx;
+  }
+  
+  /* ===== 年级选择器 ===== */
+  .picker {
+    padding: 20rpx 10rpx;
+    font-size: 30rpx;
+    color: #2D3748;
+    border-bottom: 2rpx solid #E8EEF5;
+    position: relative;
+  }
+  
+  .picker::after {
+    content: '▼';
+    position: absolute;
+    right: 10rpx;
+    color: #B0BEC5;
+    font-size: 24rpx;
+  }
+  
+  /* ===== 按钮 ===== */
+  .btn-primary {
+    width: 100%;
+    height: 96rpx;
+    line-height: 96rpx;
+    background: linear-gradient(135deg, #4A90D9 0%, #357ABD 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 48rpx;
+    font-size: 34rpx;
+    font-weight: 500;
+    letter-spacing: 2rpx;
+    box-shadow: 0 8rpx 24rpx rgba(74, 144, 217, 0.3);
+  }
+  
+  .btn-primary:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+
+  .btn-primary[disabled] {
+    background: #AFC8DF;
+    box-shadow: none;
+  }
+  
+  .btn-primary::after {
+    border: none;
+  }
+
+  .picker-disabled {
+    padding: 20rpx 10rpx;
+    font-size: 30rpx;
+    color: #B0BEC5;
+    border-bottom: 2rpx solid #E8EEF5;
+  }
+  
+  .disabled-text {
+    color: #B0BEC5;
+  }

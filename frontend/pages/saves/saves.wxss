@@ -1,0 +1,171 @@
+page {
+  background: #F5F7FA;
+}
+
+.saves-container {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 36rpx 32rpx calc(60rpx + env(safe-area-inset-bottom));
+}
+
+.header-area {
+  text-align: center;
+  padding: 24rpx 0 34rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #2C3E50;
+  margin-bottom: 8rpx;
+}
+
+.page-subtitle {
+  font-size: 26rpx;
+  color: #7F8C8D;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 110rpx 0;
+  font-size: 28rpx;
+  color: #7F8C8D;
+}
+
+.saves-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.save-card {
+  background: #FFFFFF;
+  border-radius: 18rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.save-card-main {
+  min-width: 0;
+}
+
+.save-title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 18rpx;
+}
+
+.save-icon {
+  font-size: 30rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.save-story {
+  flex: 1;
+  min-width: 0;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.save-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-bottom: 16rpx;
+}
+
+.save-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 22rpx;
+  background: #EBF5FF;
+  color: #357ABD;
+  font-size: 24rpx;
+}
+
+.save-time {
+  font-size: 24rpx;
+  color: #7F8C8D;
+}
+
+.save-summary {
+  display: block;
+  font-size: 26rpx;
+  color: #607D8B;
+  line-height: 1.55;
+  margin-bottom: 24rpx;
+}
+
+.save-actions {
+  display: flex;
+  gap: 18rpx;
+}
+
+.save-action-btn {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.save-action-btn::after {
+  border: none;
+}
+
+.btn-load {
+  background: linear-gradient(135deg, #4A90D9, #357ABD);
+  color: #FFFFFF;
+}
+
+.btn-delete {
+  background: #FEE2E2;
+  color: #D64545;
+}
+
+.save-action-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 36rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 82rpx;
+  margin-bottom: 28rpx;
+}
+
+.empty-title {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #2C3E50;
+  margin-bottom: 12rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #95A5A6;
+  line-height: 1.5;
+}

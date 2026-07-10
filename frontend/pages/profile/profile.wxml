@@ -1,0 +1,60 @@
+<view class="profile-container">
+  <view class="header-area">
+    <text class="page-title">完善个人信息</text>
+    <text class="page-subtitle">请填写以下信息，开启探校之旅</text>
+  </view>
+
+  <view class="form-card">
+    <!-- 姓名 -->
+    <view class="form-item">
+      <text class="label">📝 姓名 <text class="required">*</text></text>
+      <input class="input" placeholder="请输入你的姓名" bindinput="onNameInput" value="{{name}}"/>
+    </view>
+
+    <!-- 性别 -->
+    <view class="form-item">
+      <text class="label">👤 性别 <text class="required">*</text></text>
+      <radio-group class="gender-group" bindchange="onGenderChange">
+        <label class="gender-option">
+          <radio value="男" checked="{{gender==='男'}}" color="#4A90D9"/>
+          <text class="gender-text">男生</text>
+        </label>
+        <label class="gender-option">
+          <radio value="女" checked="{{gender==='女'}}" color="#4A90D9"/>
+          <text class="gender-text">女生</text>
+        </label>
+      </radio-group>
+    </view>
+
+    <!-- 年级 -->
+    <view class="form-item">
+      <text class="label">🎓 年级</text>
+      <picker mode="selector" range="{{gradeList}}" bindchange="onGradeChange">
+        <view class="picker">{{grade || '请选择你的年级'}}</view>
+      </picker>
+    </view>
+
+    <!-- ===== 修改：学院改为选择器 ===== -->
+    <view class="form-item">
+      <text class="label">🏛️ 学院</text>
+      <picker mode="selector" range="{{collegeList}}" bindchange="onCollegeChange">
+        <view class="picker">{{college || '请选择你的学院'}}</view>
+      </picker>
+    </view>
+
+    <!-- ===== 修改：专业改为选择器（动态变化） ===== -->
+    <view class="form-item">
+      <text class="label">📚 专业</text>
+      <picker mode="selector" range="{{majorList}}" bindchange="onMajorChange" wx:if="{{college}}">
+        <view class="picker">{{major || '请选择你的专业'}}</view>
+      </picker>
+      <view class="picker-disabled" wx:else>
+        <text class="disabled-text">请先选择学院</text>
+      </view>
+    </view>
+  </view>
+
+  <button class="btn-primary" bindtap="saveProfile" loading="{{saving}}" disabled="{{saving}}">
+    {{saving ? '保存中...' : '开始探校之旅 →'}}
+  </button>
+</view>
