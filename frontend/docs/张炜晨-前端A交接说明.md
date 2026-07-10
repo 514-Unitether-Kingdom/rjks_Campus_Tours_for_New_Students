@@ -55,35 +55,58 @@ wx.setStorageSync('useRealWxCode', true)
 
 ## 3. 如何运行
 
-1. 用微信开发者工具导入：
+1. 先获取项目代码：
 
-```text
-D:\GitHub\rjks_Campus_Tours_for_New_Students\frontend
+```bash
+git clone https://github.com/514-Unitether-Kingdom/rjks_Campus_Tours_for_New_Students.git
 ```
 
-2. 本地联调时，后端默认地址是：
+如果已经克隆过项目，进入项目目录后拉取最新代码：
+
+```bash
+git pull
+```
+
+2. 用微信开发者工具导入小程序前端目录：
+
+```text
+rjks_Campus_Tours_for_New_Students/frontend
+```
+
+这里的 `frontend` 是仓库里的前端目录，不要求和我电脑上的路径一致。每个人按自己本机实际克隆位置选择即可。
+
+3. 本地联调时，后端默认地址是：
 
 ```js
 // utils/api.js
 const BASE_URL = 'http://localhost:3000'
 ```
 
-3. 如果后端同学给了 ngrok 地址，有两种改法：
+4. 如果后端同学给了 ngrok / cloudflare 等公网联调地址，推荐在微信开发者工具控制台临时设置：
 
 ```js
-// 方式一：直接改 utils/api.js 的 BASE_URL
-const BASE_URL = 'https://xxxx.ngrok-free.app'
-```
-
-```js
-// 方式二：在微信开发者工具控制台临时设置
 wx.setStorageSync('apiBaseUrl', 'https://xxxx.ngrok-free.app')
 ```
 
-4. 微信开发者工具本地调 `localhost:3000` 时，勾选：
+然后点击“编译”。这样不会把临时地址提交进仓库。
+
+如果要恢复默认本地地址，执行：
+
+```js
+wx.removeStorageSync('apiBaseUrl')
+```
+
+5. 微信开发者工具本地调试时，建议勾选：
 
 ```text
 详情 -> 本地设置 -> 不校验合法域名、web-view、TLS 版本以及 HTTPS 证书
+```
+
+6. 如果页面出现旧登录态或旧联调地址影响测试，可在控制台清理缓存后重新设置地址：
+
+```js
+wx.clearStorageSync()
+wx.setStorageSync('apiBaseUrl', 'https://xxxx.ngrok-free.app')
 ```
 
 ## 4. 后端联调接口
