@@ -14,3 +14,6 @@ npm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# 隧道工具（体积大，各自下载）
+cloudflared.exe
