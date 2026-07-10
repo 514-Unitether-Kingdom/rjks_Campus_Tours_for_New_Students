@@ -105,6 +105,17 @@ const resetRuntimeData = async () => {
   r = await req('GET', '/api/stories/不存在/nodes', { token: A });
   ok(r.json.code === 4101, 'T7-05  请求不存在的剧情 → 4101', JSON.stringify(r.json));
 
+  // card / print 本期隐藏（Q-09）。拿不到节点还不够，也不能被直接完成或存档，
+  // 否则用户绕过前端发一个请求就能领走本期不该拿到的勋章。
+  r = await req('GET', '/api/stories/card/nodes', { token: A });
+  ok(r.json.code === 4101, 'T7-05a 请求隐藏剧情 card 的节点 → 4101', JSON.stringify(r.json));
+
+  r = await req('POST', '/api/stories/card/complete', { token: A });
+  ok(r.json.code === 4101, 'T7-05b 直接完成隐藏剧情 card → 4101，不发放 badge_card', JSON.stringify(r.json));
+
+  r = await req('POST', '/api/save-slots', { token: A, body: { storyId: 'print', nodeId: 'p1' } });
+  ok(r.json.code === 4101, 'T7-05c 对隐藏剧情 print 存档 → 4101', JSON.stringify(r.json));
+
   // ---------------------------------------------------------------
   console.log('\n【勋章发放】FN-08, BR-19, RSK-04');
   r = await req('POST', '/api/stories/campus/complete', { token: A });
