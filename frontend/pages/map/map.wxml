@@ -1,0 +1,44 @@
+<view class="map-container">
+  <view class="header-area">
+    <text class="page-title">🗺️ 校园地图</text>
+    <text class="page-subtitle">北京工业大学 · 平乐园校区</text>
+    <text class="cache-tip" wx:if="{{cacheTip}}">{{cacheTip}}</text>
+  </view>
+
+  <view class="map-wrapper">
+    <movable-area class="map-area">
+      <movable-view
+        class="map-movable"
+        direction="all"
+        scale="true"
+        scale-min="1"
+        scale-max="4"
+        scale-value="1"
+      >
+        <image
+          class="map-image"
+          src="{{mapImage}}"
+          mode="aspectFit"
+          bindload="onMapLoad"
+          binderror="onMapError"
+          bindlongpress="onMapLongPress"
+        />
+      </movable-view>
+
+      <view class="map-placeholder" wx:if="{{loading || loadError}}">
+        <text class="placeholder-icon">🗺️</text>
+        <text class="placeholder-text">{{loadError ? '地图加载失败' : '地图加载中...'}}</text>
+        <button class="retry-btn" wx:if="{{loadError}}" bindtap="retryLoad">重试</button>
+      </view>
+    </movable-area>
+  </view>
+
+  <view class="map-tip">
+    <text class="tip-icon">💡</text>
+    <text class="tip-text">双指缩放 · 拖动查看 · 长按可保存图片</text>
+  </view>
+
+  <view class="disclaimer">
+    <text class="disclaimer-text">模拟体验，以学校官方最新通知为准</text>
+  </view>
+</view>

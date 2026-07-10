@@ -1,0 +1,54 @@
+<view class="story-container">
+  <!-- 顶部导航 -->
+  <view class="story-header">
+    <view class="header-left" bindtap="goBack">
+      <text class="back-icon">‹</text>
+      <text class="back-text">返回</text>
+    </view>
+    <text class="header-title">浏览校园</text>
+    <view class="header-right">
+      <text class="save-btn" bindtap="onSave">💾 存档</text>
+    </view>
+  </view>
+
+  <!-- 剧情主区域 -->
+  <view class="story-body" bindtap="onTap">
+    <!-- 背景图 -->
+    <image class="story-bg" src="{{currentNode.bg || '/images/story_bg_default.jpg'}}" mode="aspectFill"></image>
+    
+    <!-- 人物立绘 -->
+    <image class="story-character" 
+           src="{{currentNode.characterImage || ''}}" 
+           mode="aspectFit"
+           wx:if="{{currentNode.characterImage}}">
+    </image>
+
+    <!-- 对话框 -->
+    <view class="dialog-box">
+      <view class="dialog-name" wx:if="{{currentNode.character}}">
+        <text>{{currentNode.character}}</text>
+      </view>
+      <view class="dialog-content">
+        <text>{{currentNode.text}}</text>
+      </view>
+      <!-- 底部提示 - 分开写条件 -->
+      <view class="dialog-tap-hint" wx:if="{{isCompleted}}">
+        <text>✅ 已完成，点击返回</text>
+      </view>
+      <view class="dialog-tap-hint" wx:elif="{{isEnding}}">
+        <text>⏳ 结算中...</text>
+      </view>
+      <view class="dialog-tap-hint" wx:elif="{{currentNode.isEnd}}">
+        <text>👆 点击完成剧情</text>
+      </view>
+      <view class="dialog-tap-hint" wx:else>
+        <text>点击继续 ▶</text>
+      </view>
+    </view>
+
+    <!-- 历史对话按钮 -->
+    <view class="history-btn" catchtap="showHistory">
+      <text>📜 历史</text>
+    </view>
+  </view>
+</view>

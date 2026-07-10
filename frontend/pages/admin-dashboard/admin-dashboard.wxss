@@ -1,0 +1,259 @@
+page {
+    background: #F5F7FA;
+  }
+  
+  .admin-container {
+    padding: 30rpx 30rpx 60rpx;
+    min-height: 100vh;
+  }
+  
+  .header-area {
+    text-align: center;
+    padding: 20rpx 0 30rpx;
+  }
+  
+  .page-title {
+    display: block;
+    font-size: 44rpx;
+    font-weight: bold;
+    color: #2C3E50;
+    margin-bottom: 8rpx;
+  }
+  
+  .page-subtitle {
+    font-size: 26rpx;
+    color: #7F8C8D;
+  }
+  
+  /* ===== 统计卡片 ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20rpx;
+    margin-bottom: 30rpx;
+  }
+  
+  .stat-card {
+    background: #FFFFFF;
+    border-radius: 20rpx;
+    padding: 30rpx 20rpx;
+    text-align: center;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  }
+  
+  .stat-number {
+    display: block;
+    font-size: 44rpx;
+    font-weight: bold;
+    color: #4A90D9;
+    margin-bottom: 8rpx;
+  }
+  
+  .stat-label {
+    font-size: 22rpx;
+    color: #95A5A6;
+  }
+  
+  /* ===== Tab切换 ===== */
+  .tab-bar {
+    display: flex;
+    background: #FFFFFF;
+    border-radius: 20rpx;
+    overflow: hidden;
+    margin-bottom: 30rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  }
+  
+  .tab-item {
+    flex: 1;
+    text-align: center;
+    padding: 24rpx 0;
+    font-size: 28rpx;
+    color: #95A5A6;
+    transition: all 0.3s;
+  }
+  
+  .tab-item.active {
+    color: #4A90D9;
+    background: #EBF5FF;
+    font-weight: 500;
+  }
+  
+  .tab-item:active {
+    opacity: 0.7;
+  }
+  
+  /* ===== Tab内容 ===== */
+  .tab-content {
+    background: #FFFFFF;
+    border-radius: 20rpx;
+    padding: 20rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  }
+  
+  .action-bar {
+    display: flex;
+    gap: 20rpx;
+    margin-bottom: 24rpx;
+  }
+  
+  .btn-export {
+    flex: 1;
+    height: 72rpx;
+    line-height: 72rpx;
+    background: linear-gradient(135deg, #4A90D9, #357ABD);
+    color: #FFFFFF;
+    border-radius: 36rpx;
+    font-size: 26rpx;
+    border: none;
+  }
+  
+  .btn-export::after {
+    border: none;
+  }
+  
+  /* ===== 用户表格 ===== */
+  .user-table {
+    max-height: 400rpx;
+    overflow-y: auto;
+  }
+  
+  .table-header {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 2.5fr 2fr;
+    padding: 16rpx 12rpx;
+    background: #F5F7FA;
+    border-radius: 12rpx;
+    font-size: 24rpx;
+    font-weight: 500;
+    color: #4A5568;
+  }
+  
+  .table-row {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 2.5fr 2fr;
+    padding: 14rpx 12rpx;
+    font-size: 24rpx;
+    color: #2D3748;
+    border-bottom: 1rpx solid #F0F2F5;
+  }
+  
+  .col-name,
+  .col-gender,
+  .col-college,
+  .col-time {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .table-empty {
+    text-align: center;
+    padding: 40rpx 0;
+    font-size: 26rpx;
+    color: #B0BEC5;
+  }
+  
+  /* ===== 剧情预览 ===== */
+  .story-preview {
+    max-height: 500rpx;
+    overflow-y: auto;
+  }
+  
+  .story-preview-item {
+    border: 1rpx solid #F0F2F5;
+    border-radius: 12rpx;
+    margin-bottom: 16rpx;
+    overflow: hidden;
+  }
+  
+  .preview-header {
+    display: flex;
+    align-items: center;
+    padding: 18rpx 20rpx;
+    background: #F8FAFC;
+    gap: 16rpx;
+  }
+  
+  .preview-header:active {
+    background: #EBF5FF;
+  }
+  
+  .preview-name {
+    flex: 1;
+    font-size: 28rpx;
+    font-weight: 500;
+    color: #2C3E50;
+  }
+  
+  .preview-type {
+    font-size: 20rpx;
+    padding: 4rpx 16rpx;
+    border-radius: 20rpx;
+  }
+  
+  .type-long {
+    background: #EBF5FF;
+    color: #4A90D9;
+  }
+  
+  .type-short {
+    background: #FEF5E7;
+    color: #E67E22;
+  }
+  
+  .preview-arrow {
+    font-size: 24rpx;
+    color: #B0BEC5;
+  }
+  
+  .preview-body {
+    padding: 16rpx 20rpx;
+    background: #FFFFFF;
+  }
+  
+  .preview-node {
+    padding: 8rpx 0;
+    font-size: 24rpx;
+    color: #4A5568;
+    line-height: 1.6;
+    border-bottom: 1rpx dashed #F0F2F5;
+  }
+  
+  .preview-node:last-child {
+    border-bottom: none;
+  }
+  
+  .node-id {
+    color: #B0BEC5;
+    margin-right: 12rpx;
+  }
+  
+  .node-character {
+    color: #4A90D9;
+    font-weight: 500;
+  }
+  
+  .node-text {
+    color: #2D3748;
+  }
+  
+  /* ===== 退出按钮 ===== */
+  .logout-area {
+    margin-top: 30rpx;
+  }
+  
+  .btn-logout {
+    width: 100%;
+    height: 80rpx;
+    line-height: 80rpx;
+    background: #FEE2E2;
+    color: #E74C3C;
+    border-radius: 40rpx;
+    font-size: 28rpx;
+    border: none;
+  }
+  
+  .btn-logout::after {
+    border: none;
+  }

@@ -1,0 +1,25 @@
+{
+    "pages": [
+      "pages/login/login",
+      "pages/profile/profile",
+      "pages/home/home",
+      "pages/story-mode/story-mode",
+      "pages/campus-story/campus-story",
+      "pages/process-select/process-select",
+      "pages/process-story/process-story",
+      "pages/badges/badges",
+      "pages/saves/saves",
+      "pages/map/map",
+      "pages/my/my",
+      "pages/admin-login/admin-login",
+      "pages/admin-dashboard/admin-dashboard"
+    ],
+    "window": {
+      "navigationBarTitleText": "探校之旅",
+      "navigationBarBackgroundColor": "#4A90D9",
+      "navigationBarTextStyle": "white",
+      "backgroundColor": "#F5F7FA"
+    },
+    "style": "v2",
+    "sitemapLocation": "sitemap.json"
+  }

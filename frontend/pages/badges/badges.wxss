@@ -1,0 +1,236 @@
+page {
+  background: #F5F7FA;
+}
+
+.badges-container {
+  padding: 40rpx 40rpx 60rpx;
+  min-height: 100vh;
+}
+
+/* ===== 头部 ===== */
+.header-area {
+  text-align: center;
+  padding: 30rpx 0 40rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #2C3E50;
+  margin-bottom: 12rpx;
+}
+
+.page-subtitle {
+  font-size: 28rpx;
+  color: #7F8C8D;
+}
+
+.badge-count {
+  display: block;
+  font-size: 26rpx;
+  color: #4A90D9;
+  margin-top: 12rpx;
+  font-weight: 500;
+}
+
+/* ===== 加载状态 ===== */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 100rpx 0;
+  font-size: 28rpx;
+  color: #95A5A6;
+}
+
+/* ===== 勋章网格 ===== */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30rpx;
+}
+
+.badge-card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 40rpx 20rpx 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* 已获得卡片 - 金色边框 */
+.badge-card.obtained {
+  border: 2rpx solid #FFD700;
+  box-shadow: 0 4rpx 30rpx rgba(255, 215, 0, 0.15);
+}
+
+/* 未获得卡片 - 灰色调 */
+.badge-card.locked {
+  opacity: 0.7;
+}
+
+/* ===== 勋章图标 ===== */
+.badge-icon-wrapper {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 20rpx;
+  transition: all 0.3s;
+}
+
+/* 已获得 - 金色发光背景 */
+.badge-icon-wrapper.obtained {
+  background: linear-gradient(135deg, #FFF8E1, #FFD54F);
+  box-shadow: 0 4rpx 24rpx rgba(255, 193, 7, 0.35);
+}
+
+/* 未获得 - 灰色背景 */
+.badge-icon-wrapper.locked {
+  background: #E8EEF5;
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.badge-icon {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+/* ===== 已获得标记 ===== */
+.badge-status {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background: #27AE60;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid #FFFFFF;
+  z-index: 10;
+  box-shadow: 0 2rpx 8rpx rgba(39, 174, 96, 0.3);
+}
+
+.status-text {
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+/* ===== 发光效果 ===== */
+.badge-glow {
+  position: absolute;
+  top: -20rpx;
+  left: -20rpx;
+  right: -20rpx;
+  bottom: -20rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.3), transparent 70%);
+  animation: glowPulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* ===== 勋章文字 ===== */
+.badge-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-bottom: 4rpx;
+}
+
+.badge-card.locked .badge-name {
+  color: #95A5A6;
+}
+
+.badge-desc {
+  font-size: 22rpx;
+  color: #95A5A6;
+  margin-bottom: 12rpx;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.badge-card.locked .badge-desc {
+  color: #B0BEC5;
+}
+
+/* ===== 状态标签 ===== */
+.badge-status-label {
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  margin-bottom: 6rpx;
+}
+
+.obtained-label {
+  background: #E8F8F0;
+  color: #27AE60;
+}
+
+.locked-label {
+  background: #F0F2F5;
+  color: #B0BEC5;
+}
+
+/* ===== 未获得提示 ===== */
+.badge-hint {
+  font-size: 20rpx;
+  color: #B0BEC5;
+  margin-top: 4rpx;
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-title {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #2C3E50;
+  margin-bottom: 12rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #95A5A6;
+  margin-bottom: 50rpx;
+}
+
+.btn-go-story {
+  background: linear-gradient(135deg, #4A90D9 0%, #357ABD 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 40rpx;
+  padding: 20rpx 60rpx;
+  font-size: 30rpx;
+}
+
+.btn-go-story::after {
+  border: none;
+}

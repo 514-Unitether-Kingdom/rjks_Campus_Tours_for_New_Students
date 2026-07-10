@@ -1,0 +1,117 @@
+/* 登录页样式 - 完全重构 */
+page {
+    background: linear-gradient(180deg, #F0F7FF 0%, #FFFFFF 100%);
+    height: 100vh;
+  }
+  
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    padding: 60rpx 60rpx 40rpx;
+    box-sizing: border-box;
+  }
+  
+  /* ========== 顶部区域 ========== */
+  .header-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-top: 80rpx;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .logo-wrapper {
+    width: 160rpx;
+    height: 160rpx;
+    background: linear-gradient(135deg, #4A90D9 0%, #357ABD 100%);
+    border-radius: 40rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40rpx;
+    box-shadow: 0 12rpx 40rpx rgba(74, 144, 217, 0.25);
+  }
+  
+  .logo {
+    width: 100rpx;
+    height: 100rpx;
+  }
+  
+  .app-title {
+    font-size: 48rpx;
+    font-weight: bold;
+    color: #2C3E50;
+    letter-spacing: 4rpx;
+    margin-bottom: 16rpx;
+  }
+  
+  .app-subtitle {
+    font-size: 28rpx;
+    color: #7F8C8D;
+    letter-spacing: 2rpx;
+  }
+  
+  /* ========== 登录按钮区域 ========== */
+  .login-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40rpx;
+  }
+  
+  .btn-login {
+    width: 100%;
+    height: 96rpx;
+    line-height: 96rpx;
+    background: linear-gradient(135deg, #4A90D9 0%, #357ABD 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 48rpx;
+    font-size: 34rpx;
+    font-weight: 500;
+    letter-spacing: 2rpx;
+    box-shadow: 0 8rpx 24rpx rgba(74, 144, 217, 0.35);
+    transition: all 0.3s ease;
+  }
+  
+  .btn-login:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+    box-shadow: 0 4rpx 12rpx rgba(74, 144, 217, 0.25);
+  }
+
+  .btn-login[disabled] {
+    background: #AFC8DF;
+    color: #FFFFFF;
+    box-shadow: none;
+  }
+  
+  .btn-login::after {
+    border: none;
+  }
+  
+  .login-tip {
+    margin-top: 24rpx;
+    font-size: 24rpx;
+    color: #B0BEC5;
+    letter-spacing: 1rpx;
+  }
+  
+  /* ========== 底部版权 ========== */
+  .footer {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 20rpx;
+  }
+  
+  .footer-text {
+    font-size: 22rpx;
+    color: #CCD7E4;
+    letter-spacing: 1rpx;
+  }

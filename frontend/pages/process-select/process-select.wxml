@@ -1,0 +1,61 @@
+<view class="process-container">
+  <view class="header-area">
+    <text class="page-title">📋 办事流程</text>
+    <text class="page-subtitle">点击地图标记，了解校园办事流程</text>
+  </view>
+
+  <!-- 地图背景 -->
+  <view class="map-wrapper">
+    <image class="map-bg" src="/images/campus_map_full.png" mode="widthFix"></image>
+    
+    <!-- 医保报销标记 -->
+    <view class="marker marker-medical" bindtap="onMarkerTap" data-id="medical">
+      <view class="marker-icon {{medicalCompleted ? 'completed' : 'pending'}}">
+        <text>{{medicalCompleted ? '✅' : '❗'}}</text>
+      </view>
+      <view class="marker-label">校医院</view>
+    </view>
+
+    <!-- 一卡通补办标记 -->
+    <view class="marker marker-card" bindtap="onMarkerTap" data-id="card">
+      <view class="marker-icon {{cardCompleted ? 'completed' : 'pending'}}">
+        <text>{{cardCompleted ? '✅' : '❗'}}</text>
+      </view>
+      <view class="marker-label">一卡通中心</view>
+    </view>
+
+    <!-- 打印流程标记 -->
+    <view class="marker marker-print" bindtap="onMarkerTap" data-id="print">
+      <view class="marker-icon {{printCompleted ? 'completed' : 'pending'}}">
+        <text>{{printCompleted ? '✅' : '❗'}}</text>
+      </view>
+      <view class="marker-label">打印店</view>
+    </view>
+  </view>
+
+  <!-- 流程详情弹窗 -->
+  <view class="popup-overlay" wx:if="{{showPopup}}" bindtap="closePopup">
+    <view class="popup-content" catchtap="stopPropagation">
+      <view class="popup-header">
+        <text class="popup-title">{{popupData.title}}</text>
+        <text class="popup-close" bindtap="closePopup">✕</text>
+      </view>
+      <view class="popup-body">
+        <text class="popup-desc">{{popupData.desc}}</text>
+        <view class="popup-steps" wx:if="{{popupData.steps && popupData.steps.length > 0}}">
+          <text class="step-title">📌 办理步骤：</text>
+          <text class="step-item" wx:for="{{popupData.steps}}" wx:key="index">{{index + 1}}. {{item}}</text>
+        </view>
+        <view class="popup-status" wx:if="{{popupData.completed}}">
+          <text class="status-completed">✅ 该流程已完成</text>
+          <text class="status-hint">可再次体验复习，但不会重复获得勋章</text>
+        </view>
+      </view>
+      <view class="popup-footer">
+        <button class="btn-enter" bindtap="enterStory">
+          {{popupData.completed ? '再次体验 🔄' : '进入剧情体验 →'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

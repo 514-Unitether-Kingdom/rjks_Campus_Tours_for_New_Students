@@ -1,0 +1,90 @@
+<view class="admin-container">
+  <view class="header-area">
+    <text class="page-title">🔐 管理后台</text>
+    <text class="page-subtitle">数据统计 · 内容管理</text>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-grid">
+    <view class="stat-card">
+      <text class="stat-number">{{stats.totalUsers || 0}}</text>
+      <text class="stat-label">总注册用户</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-number">{{stats.completedStories || 0}}</text>
+      <text class="stat-label">剧情完成数</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-number">{{stats.totalBadges || 0}}</text>
+      <text class="stat-label">勋章发放数</text>
+    </view>
+  </view>
+
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'users' ? 'active' : ''}}" bindtap="switchTab" data-tab="users">
+      <text>👥 用户数据</text>
+    </view>
+    <view class="tab-item {{activeTab === 'stories' ? 'active' : ''}}" bindtap="switchTab" data-tab="stories">
+      <text>📖 剧情管理</text>
+    </view>
+  </view>
+
+  <!-- 用户数据Tab -->
+  <view class="tab-content" wx:if="{{activeTab === 'users'}}">
+    <view class="action-bar">
+      <button class="btn-export" bindtap="exportUsers">
+        📥 导出用户数据 (Excel)
+      </button>
+    </view>
+    <view class="user-table">
+      <view class="table-header">
+        <text class="col-name">姓名</text>
+        <text class="col-gender">性别</text>
+        <text class="col-college">学院</text>
+        <text class="col-time">注册时间</text>
+      </view>
+      <view class="table-row" wx:for="{{stats.users}}" wx:key="id">
+        <text class="col-name">{{item.name || '未知'}}</text>
+        <text class="col-gender">{{item.gender || '-'}}</text>
+        <text class="col-college">{{item.college || '-'}}</text>
+        <text class="col-time">{{item.registerTime || '-'}}</text>
+      </view>
+      <view class="table-empty" wx:if="{{stats.users.length === 0}}">
+        <text>暂无用户数据</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 剧情管理Tab -->
+  <view class="tab-content" wx:if="{{activeTab === 'stories'}}">
+    <view class="action-bar">
+      <button class="btn-export" bindtap="exportStories">
+        📤 导出剧情内容 (TXT)
+      </button>
+    </view>
+    
+    <view class="story-preview">
+      <view class="story-preview-item" wx:for="{{storyList}}" wx:key="id">
+        <view class="preview-header" bindtap="toggleStory" data-id="{{item.id}}">
+          <text class="preview-name">{{item.name}}</text>
+          <text class="preview-type {{item.type === '长故事' ? 'type-long' : 'type-short'}}">
+            {{item.type}}
+          </text>
+          <text class="preview-arrow">{{item.expanded ? '▼' : '▶'}}</text>
+        </view>
+        <view class="preview-body" wx:if="{{item.expanded}}">
+          <view class="preview-node" wx:for="{{item.nodes}}" wx:for-item="node" wx:key="id">
+            <text class="node-id">第{{index + 1}}节</text>
+            <text class="node-character">{{node.character || '系统'}}：</text>
+            <text class="node-text">{{node.text}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="logout-area">
+    <button class="btn-logout" bindtap="logout">退出登录</button>
+  </view>
+</view>

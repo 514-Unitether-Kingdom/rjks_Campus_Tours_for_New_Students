@@ -1,0 +1,42 @@
+<view class="home-container">
+  <!-- 头部 -->
+  <view class="header-area">
+    <view class="user-greeting">
+      <text class="greeting">👋 你好，</text>
+      <text class="username">{{userName || '新同学'}}</text>
+    </view>
+    <text class="welcome-text">欢迎来到北京工业大学</text>
+  </view>
+
+  <!-- 功能菜单网格 -->
+  <view class="menu-grid">
+    <view class="menu-item" bindtap="goToStoryMode">
+      <view class="menu-icon-wrapper" style="background: linear-gradient(135deg, #4A90D9, #6CB4EE);">
+        <image class="menu-icon" src="/images/icon_story.png" mode="aspectFit"></image>
+      </view>
+      <text class="menu-name">故事模式</text>
+      <text class="menu-desc">沉浸式剧情体验</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToMap">
+      <view class="menu-icon-wrapper" style="background: linear-gradient(135deg, #27AE60, #6FCF97);">
+        <image class="menu-icon" src="/images/icon_map.png" mode="aspectFit"></image>
+      </view>
+      <text class="menu-name">校园地图</text>
+      <text class="menu-desc">探索校园角落</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToMy">
+      <view class="menu-icon-wrapper" style="background: linear-gradient(135deg, #E67E22, #F39C12);">
+        <image class="menu-icon" src="/images/icon_my.png" mode="aspectFit"></image>
+      </view>
+      <text class="menu-name">我的</text>
+      <text class="menu-desc">个人信息设置</text>
+    </view>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="footer-tip">
+    <text class="tip-text">💡 模拟体验，以学校官方最新通知为准</text>
+  </view>
+</view>
