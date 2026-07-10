@@ -41,7 +41,9 @@ exports.save = async (req, res, next) => {
     }
 
     const story = await Story.findByRef(storyId);
-    if (!story) return res.fail(C.STORY_NOT_FOUND, '剧情不存在');
+    if (!story || story.status !== 'enabled') {
+      return res.fail(C.STORY_NOT_FOUND, '剧情不存在或暂未开放');
+    }
     if (story.type !== 'long') {
       return res.fail(C.SAVE_NOT_ALLOWED_FOR_SHORT_STORY, '短剧情不支持存档');
     }
