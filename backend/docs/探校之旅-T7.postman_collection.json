@@ -1,0 +1,267 @@
+{
+  "info": {
+    "name": "探校之旅 · T7 业务接口",
+    "description": "剧情节点、勋章发放、存档、办事流程标记、校园地图、后台统计与导出。\n\n使用方法：\n1. 在 Variables 里把 baseUrl 改成实际地址（本地 http://localhost:3000，或联调用的 ngrok 地址）\n2. 先跑「登录」文件夹里的两个请求，token 与 adminToken 会自动写入集合变量\n3. 之后任意请求都能直接发\n\n响应约定：除越权（HTTP 403）外，失败也返回 HTTP 200，业务结果看 body 里的 code 字段。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "adminToken", "value": "" },
+    { "key": "slotId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "0 登录",
+      "item": [
+        {
+          "name": "用户登录（模拟微信）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json();",
+                  "pm.test('code = 0', () => pm.expect(r.code).to.eql(0));",
+                  "pm.collectionVariables.set('token', r.data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"tester001\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/wechat-login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "wechat-login"] },
+            "description": "当前为模拟登录，code 传任意字符串都会创建/复用一个用户。真实的微信 code2Session 由后端 A 后续接入。"
+          }
+        },
+        {
+          "name": "管理员登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json();",
+                  "pm.test('code = 0', () => pm.expect(r.code).to.eql(0));",
+                  "pm.collectionVariables.set('adminToken', r.data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"rjks@bjut514\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/login", "host": ["{{baseUrl}}"], "path": ["api", "admin", "login"] },
+            "description": "连续错误 5 次会锁定 15 分钟（PRD F-10）。测完锁定用例后执行下面这条 SQL 可立即解锁：\nUPDATE admins SET failed_count = 0, locked_until = NULL WHERE username = 'admin';"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1 剧情",
+      "item": [
+        {
+          "name": "剧情列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/stories", "host": ["{{baseUrl}}"], "path": ["api", "stories"], "query": [{ "key": "type", "value": "long", "disabled": true }] },
+            "description": "只返回 status=enabled 的剧情。V1.0 即 campus 与 medical，card/print 隐藏。"
+          }
+        },
+        {
+          "name": "剧情节点",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/stories/campus/nodes", "host": ["{{baseUrl}}"], "path": ["api", "stories", "campus", "nodes"], "query": [{ "key": "fromNodeId", "value": "n4", "disabled": true }] },
+            "description": "路径里的 campus 是剧情 code，也接受自增 id。fromNodeId 用于读档续读，只返回该节点及之后的部分。\n\n节点的 id 是字符串（n1 / n_end），不是数字。"
+          }
+        },
+        {
+          "name": "剧情节点 · 剧情不存在",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/stories/nosuchstory/nodes", "host": ["{{baseUrl}}"], "path": ["api", "stories", "nosuchstory", "nodes"] },
+            "description": "期望 code = 4101"
+          }
+        },
+        {
+          "name": "完成剧情并发放勋章",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/stories/campus/complete", "host": ["{{baseUrl}}"], "path": ["api", "stories", "campus", "complete"] },
+            "description": "幂等。首次 alreadyObtained=false，之后一律 true。快速连点不会重复发放，也不会抛 500。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 勋章",
+      "item": [
+        {
+          "name": "我的勋章墙",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/badges/me", "host": ["{{baseUrl}}"], "path": ["api", "badges", "me"] },
+            "description": "返回全部 4 枚，未获得的 obtained=false（前端据此渲染灰色）。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 存档",
+      "item": [
+        {
+          "name": "保存进度",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["const r = pm.response.json();", "if (r.code === 0) pm.collectionVariables.set('slotId', r.data.slotId);"] }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"storyId\": \"campus\",\n  \"nodeId\": \"n3\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/save-slots", "host": ["{{baseUrl}}"], "path": ["api", "save-slots"] },
+            "description": "slotIndex 可选，不传时后端自动分配 1~5 中最小的空闲档位。\n第 6 次保存返回 3101（存档已满）。"
+          }
+        },
+        {
+          "name": "保存进度 · 短剧情禁存",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"storyId\": \"medical\",\n  \"nodeId\": \"m1\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/save-slots", "host": ["{{baseUrl}}"], "path": ["api", "save-slots"] },
+            "description": "期望 code = 3102"
+          }
+        },
+        {
+          "name": "存档列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/save-slots", "host": ["{{baseUrl}}"], "path": ["api", "save-slots"], "query": [{ "key": "storyId", "value": "campus", "disabled": true }] },
+            "description": "storyId 可选。按存档时间倒序。含 storyName / nodeId / nodeIndex / nodeSummary / saveTime。"
+          }
+        },
+        {
+          "name": "删除存档",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/save-slots/{{slotId}}", "host": ["{{baseUrl}}"], "path": ["api", "save-slots", "{{slotId}}"] },
+            "description": "越权删除他人存档时返回 HTTP 403 + code 1004。\n存档不存在返回 code 4103。"
+          }
+        },
+        {
+          "name": "删除存档 · 越权（换成他人的 slotId）",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/save-slots/1", "host": ["{{baseUrl}}"], "path": ["api", "save-slots", "1"] },
+            "description": "用 A 的 token 删 B 的 slotId。期望 HTTP 403 + code 1004。\n\n这是测试文档 FN-11-08 / BR-26 / RSK-03 标记的高风险项。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 办事流程标记 与 校园地图",
+      "item": [
+        {
+          "name": "流程标记列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/process-markers", "host": ["{{baseUrl}}"], "path": ["api", "process-markers"] },
+            "description": "completed 按当前用户计算。V1.0 只返回 medical。steps 是弹窗要展示的办理步骤。"
+          }
+        },
+        {
+          "name": "当前校园地图",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/maps/active", "host": ["{{baseUrl}}"], "path": ["api", "maps", "active"] },
+            "description": "地图未配置时返回 code 4104。调用会记一条浏览日志。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 后台（需 adminToken）",
+      "item": [
+        {
+          "name": "统计卡片",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/stats", "host": ["{{baseUrl}}"], "path": ["api", "admin", "stats"] },
+            "description": "completedStories 为历史累计、不含重复计数（同一用户重复通关同一剧情只算 1 次）。"
+          }
+        },
+        {
+          "name": "统计卡片 · 用普通用户 token（应被拒）",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/stats", "host": ["{{baseUrl}}"], "path": ["api", "admin", "stats"] },
+            "description": "期望 code = 1003。验证垂直越权防护（FN-15-09）。"
+          }
+        },
+        {
+          "name": "用户分页列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/users?page=1&pageSize=20", "host": ["{{baseUrl}}"], "path": ["api", "admin", "users"], "query": [{ "key": "page", "value": "1" }, { "key": "pageSize", "value": "20" }] },
+            "description": "不下发 openid（NFR-17 最小必要原则）。"
+          }
+        },
+        {
+          "name": "剧情树预览",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/stories", "host": ["{{baseUrl}}"], "path": ["api", "admin", "stories"] },
+            "description": "返回全部剧情（含 disabled 的 card / print）及其节点。"
+          }
+        },
+        {
+          "name": "导出用户 Excel",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/export/users.xlsx", "host": ["{{baseUrl}}"], "path": ["api", "admin", "export", "users.xlsx"] },
+            "description": "无用户数据时返回 code 4105，不生成空文件。\n文件名在 X-Filename 响应头里（URL 编码）。\n姓名等用户可控字段做了 Excel 公式注入转义。"
+          }
+        },
+        {
+          "name": "导出剧情 TXT",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/export/stories.txt", "host": ["{{baseUrl}}"], "path": ["api", "admin", "export", "stories.txt"] },
+            "description": "UTF-8 with BOM，换行 CRLF。无剧情数据时返回 code 4105。"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -17,3 +17,5 @@ Thumbs.db
 
 # 微信开发者工具本机私有配置
 frontend/project.private.config.json
+# 隧道工具（体积大，各自下载）
+cloudflared.exe

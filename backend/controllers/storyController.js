@@ -58,8 +58,12 @@ exports.completeStory = async (req, res, next) => {
   const userId = req.user.id;
   let conn;
   try {
+    // 必须与 getNodes 一样校验 status。否则 card / print 这类本期隐藏的剧情，
+    // 虽然拿不到节点内容，却仍能被直接 POST 完成并领走勋章——请求可以绕过前端直接发。
     const story = await Story.findByRef(req.params.id);
-    if (!story) return res.fail(C.STORY_NOT_FOUND, '剧情不存在');
+    if (!story || story.status !== 'enabled') {
+      return res.fail(C.STORY_NOT_FOUND, '剧情不存在或暂未开放');
+    }
 
     const endNodeId = await Story.findEndNodeId(story.id);
 
