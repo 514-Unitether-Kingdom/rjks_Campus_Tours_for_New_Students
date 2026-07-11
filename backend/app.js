@@ -25,6 +25,10 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+// 请求无 body（如缺 Content-Type）时 express 不会填充 req.body，
+// 各 controller 直接解构 req.body 会抛错并返回 5000。此处兜底为 {}，
+// 让缺参数的请求正常走到参数校验（返回 2001）而非崩溃（NFR-09）。
+app.use((req, res, next) => { if (req.body == null) req.body = {}; next(); });
 
 // 2. 挂载自定义响应方法 (让 res.success 和 res.fail 可用)
 // 必须先于所有路由注册：路由处理器和 auth 中间件都会调用 res.success / res.fail
