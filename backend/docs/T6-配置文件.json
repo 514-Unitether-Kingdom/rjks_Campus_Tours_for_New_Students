@@ -1,0 +1,185 @@
+{
+  "info": {
+    "name": "探校之旅 · T6 认证与用户模块",
+    "description": "微信登录、用户信息管理、管理员登录、认证与鉴权测试。\n\n使用方法：\n1. Variables 中 baseUrl 默认 http://localhost:3000\n2. 先跑「登录」文件夹，token 自动写入变量\n3. 响应约定：认证失败返回 HTTP 401，越权返回 HTTP 403，其余失败返回 200 + 业务码",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "adminToken", "value": "" },
+    { "key": "userId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "0 登录",
+      "item": [
+        {
+          "name": "微信登录（模拟模式）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json();",
+                  "pm.test('code = 0', () => pm.expect(r.code).to.eql(0));",
+                  "pm.collectionVariables.set('token', r.data.token);",
+                  "pm.test('needProfile 存在', () => pm.expect(r.data.needProfile).to.not.be.undefined);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"test_user_001\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/wechat-login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "wechat-login"] },
+            "description": "模拟模式，MOCK_WECHAT=true。传任意 code 即可登录。\n\n✅ 正确：返回 token 和 needProfile\n❌ 缺 code：code 2001"
+          }
+        },
+        {
+          "name": "管理员登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json();",
+                  "pm.test('code = 0', () => pm.expect(r.code).to.eql(0));",
+                  "pm.collectionVariables.set('adminToken', r.data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"rjks@bjut514\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/login", "host": ["{{baseUrl}}"], "path": ["api", "admin", "login"] },
+            "description": "管理员账号：admin / rjks@bjut514\n\n✅ 正确：返回 adminToken\n❌ 密码错误：code 3001（提示剩余次数）\n❌ 锁定：code 3002（连续 5 次失败）"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1 用户信息",
+      "item": [
+        {
+          "name": "获取用户信息",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api", "users", "me"] },
+            "description": "✅ 正确：code 0，无 openid\n❌ 无 token：HTTP 401 + code 1002\n❌ 无效 token：HTTP 401 + code 1003"
+          }
+        },
+        {
+          "name": "更新用户信息",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"测试用户\",\n  \"gender\": \"男\",\n  \"grade\": \"大一\",\n  \"college\": \"信息学部\",\n  \"major\": \"软件工程\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api", "users", "me"] },
+            "description": "✅ 正确：code 0，字段正确\n❌ 缺姓名或性别：code 2001"
+          }
+        },
+        {
+          "name": "更新用户信息 · 缺姓名",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"gender\": \"男\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api", "users", "me"] },
+            "description": "❌ 预期：code 2001，姓名和性别为必填项"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 鉴权验证",
+      "item": [
+        {
+          "name": "无 token 访问受保护接口",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api", "users", "me"] },
+            "description": "❌ 预期：HTTP 401 + code 1002"
+          }
+        },
+        {
+          "name": "无效 token 访问受保护接口",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer invalid_token_123" }],
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api", "users", "me"] },
+            "description": "❌ 预期：HTTP 401 + code 1003"
+          }
+        },
+        {
+          "name": "垂直越权：普通用户调后台接口",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/stats", "host": ["{{baseUrl}}"], "path": ["api", "admin", "stats"] },
+            "description": "❌ 预期：HTTP 401 + code 1003（普通 token 不能调后台接口）"
+          }
+        },
+        {
+          "name": "垂直越权：管理员调用户接口",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api", "users", "me"] },
+            "description": "❌ 预期：HTTP 401 + code 1003（adminToken 不能调用户接口）"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 管理员登录（异常）",
+      "item": [
+        {
+          "name": "管理员登录 · 密码错误",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"wrong_password\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/login", "host": ["{{baseUrl}}"], "path": ["api", "admin", "login"] },
+            "description": "❌ 预期：code 3001，提示剩余次数\n第 5 次错误时返回 code 3002（锁定15分钟）"
+          }
+        },
+        {
+          "name": "管理员登录 · 用户名不存在",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"not_exist\",\n  \"password\": \"any\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/login", "host": ["{{baseUrl}}"], "path": ["api", "admin", "login"] },
+            "description": "❌ 预期：code 3001，用户名或密码错误"
+          }
+        },
+        {
+          "name": "管理员登录 · 缺用户名",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"password\": \"rjks@bjut514\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/login", "host": ["{{baseUrl}}"], "path": ["api", "admin", "login"] },
+            "description": "❌ 预期：code 2001"
+          }
+        }
+      ]
+    }
+  ]
+}
