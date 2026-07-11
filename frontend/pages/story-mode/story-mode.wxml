@@ -1,58 +1,13 @@
-<view class="story-mode-container">
-  <view class="header-area">
-    <text class="page-title">📖 故事模式</text>
-    <text class="page-subtitle">选择你感兴趣的剧情，开始探索吧</text>
-  </view>
-
-  <view class="story-list">
-    <!-- 浏览校园 - 长故事 -->
-    <view class="story-card" bindtap="goCampusStory">
-      <view class="story-card-left">
-        <!-- 🏫 使用图片：/images/story_campus_icon.png -->
-        <image class="story-icon" src="/images/story_campus_icon.png" mode="aspectFit"></image>
-        <view class="story-badge">长故事</view>
-      </view>
-      <view class="story-card-right">
-        <text class="story-name">🏛️ 浏览校园</text>
-        <text class="story-desc">跟随学姐的脚步，探索北工大每个角落</text>
-        <view class="story-tags">
-          <text class="tag tag-blue">支持存档</text>
-          <text class="tag tag-green">约15分钟</text>
-        </view>
-      </view>
-      <text class="story-arrow">›</text>
-    </view>
-
-    <!-- 办事流程 - 短故事 -->
-    <view class="story-card" bindtap="goProcessSelect">
-      <view class="story-card-left">
-        <!-- 📋 使用图片：/images/story_process_icon.png -->
-        <image class="story-icon" src="/images/story_process_icon.png" mode="aspectFit"></image>
-        <view class="story-badge story-badge-orange">短故事</view>
-      </view>
-      <view class="story-card-right">
-        <text class="story-name">📋 办事流程</text>
-        <text class="story-desc">了解医保报销等校园办事流程</text>
-        <view class="story-tags">
-          <text class="tag tag-orange">不支持存档</text>
-          <text class="tag tag-green">约5分钟</text>
-        </view>
-      </view>
-      <text class="story-arrow">›</text>
+<view class="page-shell">
+  <view class="hero"><text class="eyebrow">CAMPUS FIELD NOTES</text><text class="hero-title">从一段探索开始</text><text class="hero-copy">把校园的陌生，变成你的日常。</text></view>
+  <view class="quick-row"><view class="quick-item" bindtap="goBadges"><text class="quick-no">01</text><text>我的勋章</text></view><view class="quick-item" bindtap="goSaves"><text class="quick-no">02</text><text>继续旅程</text></view></view>
+  <view class="section-heading"><text>探索清单</text><text>{{stories.length}} 个可体验内容</text></view>
+  <view class="loading" wx:if="{{loading}}">正在整理校园路线…</view>
+  <view class="notice" wx:elif="{{loadError}}"><text>{{loadError}}</text><text class="retry" bindtap="loadStories">重新加载</text></view>
+  <view class="route-list" wx:else>
+    <view class="route-card" wx:for="{{stories}}" wx:key="id" bindtap="openStory" data-id="{{item.id}}" data-type="{{item.type}}">
+      <view class="route-index">0{{index + 1}}</view><view class="route-main"><text class="route-kind">{{item.typeLabel}}</text><text class="route-name">{{item.name}}</text><text class="route-desc">{{item.description}}</text><text class="route-meta">{{item.supportsSave ? '可保存进度' : '一气呵成的短流程'}} · {{item.completed ? '已完成，可复习' : '等待出发'}}</text></view><text class="route-arrow">→</text>
     </view>
   </view>
-
-  <!-- 底部功能按钮 -->
-  <view class="action-row">
-    <view class="action-btn" bindtap="goBadges">
-      <!-- 🏅 使用图片：/images/icon_badge.png -->
-      <image class="action-icon" src="/images/icon_badge.png" mode="aspectFit"></image>
-      <text>查看勋章</text>
-    </view>
-    <view class="action-btn" bindtap="goSaves">
-      <!-- 💾 使用图片：/images/icon_save.png -->
-      <image class="action-icon" src="/images/icon_save.png" mode="aspectFit"></image>
-      <text>查看存档</text>
-    </view>
-  </view>
+  <view class="process-link" bindtap="goProcessSelect"><text>流程地图</text><text>按地点浏览办事指南 →</text></view>
 </view>

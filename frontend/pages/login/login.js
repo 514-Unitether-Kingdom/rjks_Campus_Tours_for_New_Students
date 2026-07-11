@@ -10,6 +10,16 @@ Page({
     this.checkLoginStatus();
   },
 
+  showWelcome(name) {
+    wx.showModal({
+      title: '登录成功',
+      content: `欢迎回来，${name || '同学'}`,
+      confirmText: '进入校园',
+      showCancel: false,
+      success: () => wx.reLaunch({ url: '/pages/home/home' })
+    });
+  },
+
   async checkLoginStatus() {
     const token = wx.getStorageSync('token');
     if (!token) {
@@ -22,14 +32,7 @@ Page({
     try {
       const profile = await api.getProfile();
       if (profile.name && profile.gender) {
-        wx.showToast({
-          title: `欢迎回来，${profile.name}`,
-          icon: 'success',
-          duration: 1000
-        });
-        setTimeout(() => {
-          wx.reLaunch({ url: '/pages/home/home' });
-        }, 800);
+        this.showWelcome(profile.name);
         return;
       }
 
@@ -88,13 +91,7 @@ Page({
       }
 
       const profile = await api.getProfile();
-      wx.showToast({
-        title: `欢迎回来，${profile.name || '同学'}`,
-        icon: 'success'
-      });
-      setTimeout(() => {
-        wx.reLaunch({ url: '/pages/home/home' });
-      }, 700);
+      this.showWelcome(profile.name);
     } catch (error) {
       wx.hideLoading();
       wx.showToast({

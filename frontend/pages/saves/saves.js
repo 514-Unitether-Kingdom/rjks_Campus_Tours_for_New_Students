@@ -1,108 +1,40 @@
 const api = require('../../utils/api');
 
 Page({
-  data: {
-    saves: [],
-    loading: false
-  },
-
-  onShow() {
-    this.loadSaves();
-  },
-
+  data: { saves: [], loading: true, loadError: '' },
+  onShow() { this.loadSaves(); },
   async loadSaves() {
-    this.setData({ loading: true });
-    wx.showLoading({ title: '加载中...' });
-
+    this.setData({ loading: true, loadError: '' });
     try {
       const saves = await api.getSaveSlots();
-      const formatted = saves.map((item) => ({
-        ...item,
-        storyName: item.storyName || '浏览校园',
-        nodeIndex: item.nodeIndex || 0,
-        nodeSummary: item.nodeSummary || '暂无节点摘要',
-        saveTime: this.formatTime(item.saveTime)
-      }));
-
-      this.setData({ saves: formatted });
+      this.setData({ saves: saves.map((item) => ({ ...item, formattedTime: this.formatTime(item.saveTime) })), loading: false });
     } catch (error) {
-      this.setData({ saves: [] });
-      wx.showToast({
-        title: error.message || '存档加载失败',
-        icon: 'none'
-      });
-    } finally {
-      this.setData({ loading: false });
-      wx.hideLoading();
+      this.setData({ saves: [], loading: false, loadError: error.message || '存档加载失败' });
     }
   },
-
-  formatTime(timeStr) {
-    if (!timeStr) return '未知时间';
-    try {
-      const date = new Date(timeStr);
-      const pad = (value) => String(value).padStart(2, '0');
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    } catch (error) {
-      return timeStr;
-    }
+  formatTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '未知时间';
+    const pad = (number) => String(number).padStart(2, '0');
+    return `${date.getFullYear()}.${pad(date.getMonth() + 1)}.${pad(date.getDate())}  ${pad(date.getHours())}:${pad(date.getMinutes())}`;
   },
-
-  async loadSave(e) {
-    const slotId = e.currentTarget.dataset.id;
-    wx.showLoading({ title: '载入中...' });
-
-    try {
-      const slot = await api.loadSave(slotId);
-      wx.hideLoading();
-      wx.showToast({ title: '载入成功', icon: 'success' });
-
-      setTimeout(() => {
-        wx.navigateTo({
-          url: `/pages/campus-story/campus-story?startNodeId=${slot.nodeId}`
-        });
-      }, 500);
-    } catch (error) {
-      wx.hideLoading();
-      wx.showToast({
-        title: error.message || '载入失败，请重试',
-        icon: 'none'
-      });
-    }
+  loadSave(e) {
+    const { nodeid, storyid } = e.currentTarget.dataset;
+    wx.navigateTo({ url: `/pages/campus-story/campus-story?storyId=${storyid}&startNodeId=${nodeid}` });
   },
-
   deleteSave(e) {
     const slotId = e.currentTarget.dataset.id;
-    wx.showModal({
-      title: '确定删除此存档？',
-      content: '删除后不可恢复',
-      confirmColor: '#E74C3C',
-      success: async (res) => {
-        if (!res.confirm) return;
-
-        wx.showLoading({ title: '删除中...' });
-        try {
-          await api.deleteSave(slotId);
-          this.setData({
-            saves: this.data.saves.filter((item) => String(item.slotId) !== String(slotId))
-          });
-          wx.hideLoading();
-          wx.showToast({ title: '已删除', icon: 'success' });
-        } catch (error) {
-          wx.hideLoading();
-          wx.showToast({
-            title: error.code === 1004 ? '无权操作该存档' : (error.message || '删除失败'),
-            icon: 'none'
-          });
-          this.loadSaves();
-        }
+    wx.showModal({ title: '删除这份存档？', content: '删除后无法恢复。', confirmColor: '#C94E45', success: async ({ confirm }) => {
+      if (!confirm) return;
+      try {
+        await api.deleteSave(slotId);
+        wx.showToast({ title: '存档已删除', icon: 'success' });
+        this.loadSaves();
+      } catch (error) {
+        wx.showToast({ title: error.code === 1004 ? '无权操作该存档' : (error.message || '删除失败'), icon: 'none' });
+        this.loadSaves();
       }
-    });
+    }});
   },
-
-  onPullDownRefresh() {
-    this.loadSaves().finally(() => {
-      wx.stopPullDownRefresh();
-    });
-  }
+  onPullDownRefresh() { this.loadSaves().finally(() => wx.stopPullDownRefresh()); }
 });
