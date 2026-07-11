@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "探校之旅 · T7 业务接口",
-    "description": "剧情节点、勋章发放、存档、办事流程标记、校园地图、后台统计与导出。\n\n使用方法：\n1. 在 Variables 里把 baseUrl 改成实际地址（本地 http://localhost:3000，或联调用的 ngrok 地址）\n2. 先跑「登录」文件夹里的两个请求，token 与 adminToken 会自动写入集合变量\n3. 之后任意请求都能直接发\n\n响应约定：除越权（HTTP 403）外，失败也返回 HTTP 200，业务结果看 body 里的 code 字段。",
+    "description": "剧情节点、勋章发放、存档、办事流程标记、校园地图、后台统计与导出。\n\n使用方法：\n1. 在 Variables 里把 baseUrl 改成实际地址（本地 http://localhost:3000，或联调用的 ngrok 地址）\n2. 先跑「登录」文件夹里的两个请求，token 与 adminToken 会自动写入集合变量\n3. 之后任意请求都能直接发\n\n响应约定（标准 REST）：认证失败返 HTTP 401（缺/错 token，code 1002/1003），越权返 HTTP 403（code 1004），业务规则拒绝返 HTTP 200（看 code）。前端始终以 body 里的 code 为准。",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
