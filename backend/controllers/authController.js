@@ -10,7 +10,10 @@ exports.wechatLogin = async (req, res, next) => {
     if (!code) {
       return res.fail(C.PARAM_MISSING, '缺少微信code参数');
     }
-
+    //校验 code 存在后，立即校验长度
+    if (code.length > 60) {
+      return res.fail(C.PARAM_INVALID, 'code 参数过长');
+    }
     // 🔧 通过环境变量控制是否模拟
     const isMock = process.env.MOCK_WECHAT === 'true';
 
