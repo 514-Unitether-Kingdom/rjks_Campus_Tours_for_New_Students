@@ -1,10 +1,13 @@
 page {
     background: #F5F7FA;
+    height: 100vh;
+    overflow: hidden;
   }
   
   .home-container {
     padding: 40rpx 40rpx 60rpx;
-    min-height: 100vh;
+    height: 100vh;
+    box-sizing: border-box;
   }
   
   /* ===== 头部 ===== */
