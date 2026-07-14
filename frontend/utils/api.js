@@ -226,14 +226,15 @@ const adminLogin = async (username, password) => {
   return { ...result, token };
 };
 
-const getAdminStats = async () => {
+const getAdminStats = async (userOrder = 'desc') => {
   const [stats, users] = await Promise.all([
     adminRequest('GET', '/api/admin/stats'),
-    adminRequest('GET', '/api/admin/users?page=1&pageSize=20')
+    adminRequest('GET', `/api/admin/users?page=1&pageSize=200&order=${encodeURIComponent(userOrder)}`)
   ]);
   return {
     ...stats,
-    users: users.list || []
+    users: users.list || [],
+    userOrder: users.order || userOrder
   };
 };
 
@@ -261,8 +262,35 @@ const downloadAdminFile = (path, fileType) => new Promise((resolve, reject) => {
   });
 });
 
+const downloadAdminTextFile = (path) => new Promise((resolve, reject) => {
+  wx.downloadFile({
+    url: buildUrl(path),
+    header: {
+      Authorization: `Bearer ${getToken('adminToken')}`
+    },
+    success: (res) => {
+      if (res.statusCode !== 200) {
+        reject({ code: 5000, message: '导出失败' });
+        return;
+      }
+
+      wx.getFileSystemManager().readFile({
+        filePath: res.tempFilePath,
+        encoding: 'utf8',
+        success: ({ data }) => resolve({
+          success: true,
+          filePath: res.tempFilePath,
+          content: String(data || '').replace(/^\uFEFF/, '')
+        }),
+        fail: () => reject({ code: 5000, message: 'TXT 文件读取失败' })
+      });
+    },
+    fail: () => reject({ code: 5000, message: '导出失败，请检查网络' })
+  });
+});
+
 const exportUsers = async () => downloadAdminFile('/api/admin/export/users.xlsx', 'xlsx');
-const exportStories = async () => downloadAdminFile('/api/admin/export/stories.txt', 'txt');
+const exportStories = async () => downloadAdminTextFile('/api/admin/export/stories.txt');
 
 const logout = () => {
   clearLoginState();
