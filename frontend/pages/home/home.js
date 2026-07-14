@@ -47,5 +47,9 @@ Page({
 
   goToMy() {
     wx.navigateTo({ url: '/pages/my/my' });
+  },
+
+  goToAiChat() {
+    wx.navigateTo({ url: '/pages/ai-chat/ai-chat' });
   }
 });

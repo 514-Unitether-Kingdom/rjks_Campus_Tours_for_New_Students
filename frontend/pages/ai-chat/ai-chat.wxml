@@ -1,0 +1,61 @@
+<view class="chat-page">
+  <scroll-view class="msg-scroll" scroll-y scroll-top="{{scrollTop}}" scroll-with-animation enable-flex>
+
+    <!-- 空态：欢迎 + 推荐问题 -->
+    <view wx:if="{{messages.length === 0}}" class="welcome">
+      <view class="welcome-icon">🎓</view>
+      <view class="welcome-title">探校 AI 新生助手</view>
+      <view class="welcome-sub">校历、校车、一卡通、宿舍、食堂……新生的事儿都能问我</view>
+      <view wx:if="{{suggestions.length}}" class="sugg-wrap">
+        <view wx:for="{{suggestions}}" wx:key="*this" class="sugg-chip" data-q="{{item}}" bindtap="onTapSuggestion">{{item}}</view>
+      </view>
+    </view>
+
+    <!-- 消息列表 -->
+    <view wx:for="{{messages}}" wx:key="index" class="msg-row {{item.role}}">
+      <view class="bubble {{item.role}} {{item.error ? 'error' : ''}}">
+        <text wx:if="{{item.streaming && !item.text}}" class="typing">正在思考…</text>
+        <text wx:if="{{item.text}}" class="bubble-text" user-select>{{item.text}}</text><text wx:if="{{item.streaming && item.text}}" class="cursor">▋</text>
+
+        <!-- 答案配图 -->
+        <view wx:if="{{item.images.length}}" class="img-list">
+          <block wx:for="{{item.images}}" wx:for-item="img" wx:for-index="iidx" wx:key="full">
+            <view wx:if="{{!img.broken}}" class="img-item">
+              <image class="kb-img" src="{{img.full}}" mode="widthFix" lazy-load
+                     data-url="{{img.full}}" data-urls="{{item.imgUrls}}" bindtap="onPreviewImage"
+                     data-midx="{{index}}" data-iidx="{{iidx}}" binderror="onImgError" />
+              <text wx:if="{{img.desc}}" class="img-cap">{{img.desc}}</text>
+            </view>
+          </block>
+        </view>
+
+        <!-- 点赞点踩 -->
+        <view wx:if="{{item.role === 'assistant' && item.recordId && !item.streaming}}" class="fb-row">
+          <text class="fb-btn {{item.feedback === 1 ? 'up' : ''}}" data-idx="{{index}}" data-value="1" bindtap="onFeedback">👍</text>
+          <text class="fb-btn {{item.feedback === -1 ? 'down' : ''}}" data-idx="{{index}}" data-value="-1" bindtap="onFeedback">👎</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 猜你想问：跟在最新答案下方 -->
+    <view wx:if="{{lastRelated.length && !sending}}" class="related">
+      <text class="related-title">试试问我这些问题吧</text>
+      <view class="related-chips">
+        <view wx:for="{{lastRelated}}" wx:key="*this" class="related-chip" data-q="{{item}}" bindtap="onTapRelated">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="scroll-pad"></view>
+  </scroll-view>
+
+  <!-- 底部输入栏：白色圆角卡片 + 右下角小圆发送按钮 -->
+  <view class="input-bar">
+    <view class="input-wrap">
+      <textarea class="input" value="{{input}}" placeholder="问点校园里的事儿…" placeholder-class="ph"
+                bindinput="onInput" auto-height maxlength="500" disabled="{{sending}}"
+                show-confirm-bar="{{false}}" cursor-spacing="24"
+                confirm-type="send" bindconfirm="onSend" />
+      <view class="send-btn {{(input && !sending) ? 'on' : ''}}" bindtap="onSend"></view>
+    </view>
+  </view>
+</view>
