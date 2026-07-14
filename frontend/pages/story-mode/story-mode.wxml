@@ -1,13 +1,13 @@
 <view class="page-shell">
   <view class="hero"><text class="eyebrow">CAMPUS FIELD NOTES</text><text class="hero-title">从一段探索开始</text><text class="hero-copy">把校园的陌生，变成你的日常。</text></view>
-  <view class="quick-row"><view class="quick-item" bindtap="goBadges"><text class="quick-no">01</text><text>我的勋章</text></view><view class="quick-item" bindtap="goSaves"><text class="quick-no">02</text><text>继续旅程</text></view></view>
+  <view class="quick-row"><view class="quick-item" data-testid="story-mode-badges" bindtap="goBadges"><text class="quick-no">01</text><text>我的勋章</text></view><view class="quick-item" data-testid="story-mode-saves" bindtap="goSaves"><text class="quick-no">02</text><text>继续旅程</text></view></view>
   <view class="section-heading"><text>探索清单</text><text>校园探索与办事指南</text></view>
   <view class="loading" wx:if="{{loading}}">正在整理校园路线…</view>
-  <view class="notice" wx:elif="{{loadError}}"><text>{{loadError}}</text><text class="retry" bindtap="loadStories">重新加载</text></view>
+  <view class="notice" wx:elif="{{loadError}}"><text>{{loadError}}</text><text class="retry" data-testid="story-mode-retry" bindtap="loadStories">重新加载</text></view>
   <scroll-view class="route-list" scroll-y="true" wx:else>
-    <view class="route-card" wx:for="{{longStories}}" wx:key="id" bindtap="openStory" data-id="{{item.id}}">
+    <view class="route-card" data-testid="story-card" wx:for="{{longStories}}" wx:key="id" bindtap="openStory" data-id="{{item.id}}">
       <view class="route-index">0{{index + 1}}</view><view class="route-main"><text class="route-kind">{{item.typeLabel}}</text><text class="route-name">{{item.name}}</text><text class="route-desc">{{item.description}}</text><text class="route-meta">{{item.supportsSave ? '可保存进度' : '一气呵成的短流程'}} · {{item.completed ? '已完成，可复习' : '等待出发'}}</text></view><text class="route-arrow">→</text>
     </view>
-    <view class="route-card process-map-card" bindtap="goProcessMap"><view class="route-index">MAP</view><view class="route-main"><text class="route-kind">短故事集合</text><text class="route-name">流程地图</text><text class="route-desc">在校园地图上选择地点，了解对应办事流程。</text><text class="route-meta">地图图标 · 确认后进入短剧情</text></view><text class="route-arrow">→</text></view>
+    <view class="route-card process-map-card" data-testid="process-map-entry" bindtap="goProcessMap"><view class="route-index">MAP</view><view class="route-main"><text class="route-kind">短故事集合</text><text class="route-name">流程地图</text><text class="route-desc">在校园地图上选择地点，了解对应办事流程。</text><text class="route-meta">地图图标 · 确认后进入短剧情</text></view><text class="route-arrow">→</text></view>
   </scroll-view>
 </view>

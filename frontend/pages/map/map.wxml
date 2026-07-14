@@ -16,6 +16,7 @@
         scale-value="1"
       >
         <image
+          data-testid="campus-map-image"
           class="map-image"
           src="{{mapImage}}"
           mode="aspectFit"
@@ -28,7 +29,7 @@
       <view class="map-placeholder" wx:if="{{loading || loadError}}">
         <text class="placeholder-icon">🗺️</text>
         <text class="placeholder-text">{{loadError ? '地图加载失败' : '地图加载中...'}}</text>
-        <button class="retry-btn" wx:if="{{loadError}}" bindtap="retryLoad">重试</button>
+        <button class="retry-btn" data-testid="campus-map-retry" wx:if="{{loadError}}" bindtap="retryLoad">重试</button>
       </view>
     </movable-area>
   </view>
