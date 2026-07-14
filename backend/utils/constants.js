@@ -25,6 +25,9 @@ module.exports = {
   // 后端 B
   SAVE_SLOT_FULL: 3101,                    // 存档已满，需先删除
   SAVE_NOT_ALLOWED_FOR_SHORT_STORY: 3102,  // 短剧情不支持存档
+  SENSITIVE_CONTENT: 3103,                 // AI 助手：内容被安全审核拦截
+  RATE_LIMITED: 3104,                      // AI 助手：提问太频繁
+  AI_UNAVAILABLE: 3105,                    // AI 助手：模型暂不可用
 
   // ---- 4000 资源不存在 ----
   // 后端 A
@@ -36,6 +39,8 @@ module.exports = {
   SAVE_SLOT_NOT_FOUND: 4103,
   MAP_NOT_FOUND: 4104,
   EXPORT_NO_DATA: 4105,                    // 无数据可导出，不生成空文件（BR-36）
+  QA_RECORD_NOT_FOUND: 4106,               // AI 助手：问答记录不存在
+  KB_ENTRY_NOT_FOUND: 4107,                // AI 助手：知识条目不存在
 
   // ---- 5000 服务端 ----
   SERVER_ERROR: 5000
