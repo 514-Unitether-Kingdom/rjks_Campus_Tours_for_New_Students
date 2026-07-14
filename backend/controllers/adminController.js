@@ -82,88 +82,20 @@ exports.getUsers = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const pageSize = Math.min(200, Math.max(1, parseInt(req.query.pageSize, 10) || 20));
-    const order = String(req.query.order || 'desc').toLowerCase() === 'asc' ? 'ASC' : 'DESC';
     const offset = (page - 1) * pageSize;
 
     const [rows] = await db.query(
-      `SELECT u.id, u.name, u.gender, u.grade, u.college, u.major, u.register_time,
-              COALESCE(sp.completed_stories, 0) AS completed_stories,
-              sp.last_completed_time,
-              COALESCE(ub.total_badges, 0) AS total_badges,
-              ub.last_badge_time
-       FROM users u
-       LEFT JOIN (
-         SELECT user_id, COUNT(*) AS completed_stories, MAX(completed_time) AS last_completed_time
-         FROM story_progress
-         WHERE completed = 1
-         GROUP BY user_id
-       ) sp ON sp.user_id = u.id
-       LEFT JOIN (
-         SELECT user_id, COUNT(*) AS total_badges, MAX(obtained_time) AS last_badge_time
-         FROM user_badges
-         GROUP BY user_id
-       ) ub ON ub.user_id = u.id
-       ORDER BY u.register_time ${order}, u.id ${order}
-       LIMIT ? OFFSET ?`,
+      `SELECT id, name, gender, grade, college, major, register_time
+       FROM users ORDER BY id DESC LIMIT ? OFFSET ?`,
       [pageSize, offset]
     );
     const [[total]] = await db.query('SELECT COUNT(*) AS total FROM users');
-    const userIds = rows.map((row) => row.id);
-    const completedMap = new Map(userIds.map((id) => [id, []]));
-    const badgeMap = new Map(userIds.map((id) => [id, []]));
-
-    if (userIds.length) {
-      const placeholders = userIds.map(() => '?').join(',');
-      const [completedRows] = await db.query(
-        `SELECT sp.user_id, s.code, s.name, s.type, sp.completed_time
-         FROM story_progress sp
-         JOIN stories s ON s.id = sp.story_id
-         WHERE sp.completed = 1 AND sp.user_id IN (${placeholders})
-         ORDER BY sp.completed_time DESC`,
-        userIds
-      );
-      completedRows.forEach((row) => {
-        completedMap.get(row.user_id).push({
-          id: row.code,
-          name: row.name,
-          type: row.type === 'long' ? '长故事' : '短故事',
-          completedTime: row.completed_time
-        });
-      });
-
-      const [badgeRows] = await db.query(
-        `SELECT ub.user_id, b.code, b.name, ub.obtained_time, s.name AS story_name
-         FROM user_badges ub
-         JOIN badges b ON b.id = ub.badge_id
-         JOIN stories s ON s.id = ub.story_id
-         WHERE ub.user_id IN (${placeholders})
-         ORDER BY ub.obtained_time DESC`,
-        userIds
-      );
-      badgeRows.forEach((row) => {
-        badgeMap.get(row.user_id).push({
-          id: row.code,
-          name: row.name,
-          storyName: row.story_name,
-          obtainedTime: row.obtained_time
-        });
-      });
-    }
 
     res.success({
-      list: rows.map((row) => ({
-        ...dto.toAdminUser(row),
-        completedStories: row.completed_stories,
-        totalBadges: row.total_badges,
-        lastCompletedTime: row.last_completed_time,
-        lastBadgeTime: row.last_badge_time,
-        completedStoryList: completedMap.get(row.id) || [],
-        badgeList: badgeMap.get(row.id) || []
-      })),
+      list: rows.map(dto.toAdminUser),
       total: total.total,
       page,
-      pageSize,
-      order: order.toLowerCase()
+      pageSize
     });
   } catch (err) {
     next(err);
