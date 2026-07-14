@@ -1,0 +1,151 @@
+page { background: #F5F7FA; height: 100vh; overflow: hidden; }
+
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+/* ===== 消息滚动区 ===== */
+/* flex 列里滚动子项必须 min-height:0，否则内容撑高整页、把输入栏挤出屏幕、且滚不动 */
+.msg-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 24rpx 24rpx 0;
+  box-sizing: border-box;
+}
+.scroll-pad { height: 24rpx; }
+
+/* ===== 空态欢迎 ===== */
+.welcome {
+  padding: 90rpx 40rpx 20rpx;
+  text-align: center;
+}
+.welcome-icon { font-size: 88rpx; line-height: 1.2; }
+.welcome-title { font-size: 40rpx; font-weight: bold; color: #2C3E50; margin-top: 16rpx; }
+.welcome-sub { font-size: 26rpx; color: #95A5A6; margin-top: 14rpx; line-height: 1.6; }
+.sugg-wrap {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 18rpx; margin-top: 44rpx;
+}
+.sugg-chip {
+  background: #FFFFFF; color: #4A90D9;
+  border: 1rpx solid #D6E6F7; border-radius: 32rpx;
+  padding: 16rpx 28rpx; font-size: 26rpx;
+  box-shadow: 0 2rpx 10rpx rgba(74, 144, 217, 0.08);
+}
+.sugg-chip:active { background: #EAF3FC; }
+
+/* ===== 气泡 ===== */
+.msg-row { display: flex; margin-bottom: 28rpx; }
+.msg-row.user { justify-content: flex-end; }
+.msg-row.assistant { justify-content: flex-start; }
+
+.bubble {
+  max-width: 80%;
+  padding: 22rpx 26rpx;
+  border-radius: 24rpx;
+  font-size: 30rpx;
+  line-height: 1.62;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  word-break: break-word;
+}
+.bubble.user {
+  background: #4A90D9; color: #FFFFFF;
+  border-bottom-right-radius: 8rpx;
+}
+.bubble.assistant {
+  background: #FFFFFF; color: #2C3E50;
+  border-bottom-left-radius: 8rpx;
+}
+.bubble.error { background: #FDECEC; color: #C0392B; }
+
+.bubble-text { white-space: pre-wrap; }
+.typing { color: #95A5A6; font-size: 28rpx; }
+/* 流式打字光标 */
+.cursor { color: #4A90D9; margin-left: 2rpx; animation: blink 0.9s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ===== 配图 ===== */
+.img-list { margin-top: 16rpx; }
+.img-item { margin-top: 14rpx; }
+.kb-img {
+  width: 100%;
+  border-radius: 16rpx;
+  background: #EEF2F6;
+  display: block;
+}
+.img-cap {
+  display: block;
+  font-size: 22rpx; color: #95A5A6;
+  margin-top: 8rpx; line-height: 1.5;
+}
+
+/* ===== 猜你想问 ===== */
+.related { margin: 6rpx 0 10rpx; }
+.related-title { font-size: 24rpx; color: #95A5A6; margin-left: 6rpx; }
+.related-chips { display: flex; flex-direction: column; align-items: flex-start; gap: 14rpx; margin-top: 14rpx; }
+.related-chip {
+  max-width: 88%;
+  background: #FFFFFF; color: #4A90D9;
+  border: 1rpx solid #D6E6F7; border-radius: 32rpx;
+  padding: 14rpx 26rpx; font-size: 26rpx;
+  box-shadow: 0 2rpx 10rpx rgba(74, 144, 217, 0.06);
+}
+.related-chip:active { background: #EAF3FC; }
+
+/* ===== 点赞点踩 ===== */
+.fb-row {
+  display: flex; gap: 28rpx;
+  margin-top: 16rpx; padding-top: 14rpx;
+  border-top: 1rpx solid #F0F2F5;
+}
+.fb-btn {
+  font-size: 34rpx; opacity: 0.35;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.fb-btn.up { opacity: 1; transform: scale(1.12); }
+.fb-btn.down { opacity: 1; transform: scale(1.12); }
+
+/* ===== 底部输入栏：华为云风格圆角卡片 + 右下角小圆发送按钮 ===== */
+.input-bar {
+  flex-shrink: 0;                        /* 不被消息区挤压，始终可见可点 */
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: #F5F7FA;
+}
+/* flex 布局（非 absolute 覆盖），避免 textarea 原生组件 z-index 挡住按钮 */
+.input-wrap {
+  display: flex;
+  align-items: flex-end;                 /* 按钮随输入框长高始终贴底 */
+  gap: 12rpx;
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  padding: 12rpx 12rpx 12rpx 28rpx;
+}
+.input {
+  flex: 1;
+  min-width: 0;
+  min-height: 52rpx;
+  max-height: 200rpx;
+  padding: 8rpx 0;
+  font-size: 30rpx;
+  line-height: 1.4;
+  color: #2C3E50;
+}
+.ph { color: #B4BCC4; }
+/* 小圆按钮 + 纸飞机图标（内联 SVG，无需图片资源）；有内容才变蓝可发 */
+.send-btn {
+  flex-shrink: 0;
+  width: 64rpx; height: 64rpx;
+  border-radius: 50%;
+  background-color: #C4D6EA;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20fill='%23fff'%20d='M2%2021l21-9L2%203v7l15%202-15%202z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 52% center;
+  background-size: 32rpx 32rpx;
+}
+.send-btn.on { background-color: #4A90D9; }
+.send-btn.on:active { transform: scale(0.92); }

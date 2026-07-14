@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
+const path = require('path');
 
 // 引入路由
 const authRoutes = require('./routes/authRoutes');
@@ -12,6 +13,7 @@ const badgeRoutes = require('./routes/badgeRoutes');
 const saveSlotRoutes = require('./routes/saveSlotRoutes');
 const processMarkerRoutes = require('./routes/processMarkerRoutes');
 const mapRoutes = require('./routes/mapRoutes');
+const askRoutes = require('./routes/askRoutes');
 
 // 引入中间件
 const errorHandler = require('./middlewares/errorHandler');
@@ -39,6 +41,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// 2.5 知识库配图静态托管：/kb-images/xxx.jpg → backend/public/kb-images/
+// AI 助手回答里的图（校历、校车时间表、地图等）由此对外提供。
+// 图片已压缩(<200KB)且内容不变，给 7 天不可变缓存；
+// 放开 Cross-Origin-Resource-Policy，便于小程序 <image> 跨源加载（helmet 默认 same-origin 会挡）。
+app.use('/kb-images', express.static(path.join(__dirname, 'public', 'kb-images'), {
+  maxAge: '7d',
+  immutable: true,
+  setHeaders: (res) => res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
+}));
+
 // 3. 注册路由（前端访问的就是这些地址）
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -48,6 +60,7 @@ app.use('/api/badges', badgeRoutes);
 app.use('/api/save-slots', saveSlotRoutes);
 app.use('/api/process-markers', processMarkerRoutes);
 app.use('/api/maps', mapRoutes);
+app.use('/api/ask', askRoutes);
 
 // 4. 根路径测试
 app.get('/', (req, res) => {

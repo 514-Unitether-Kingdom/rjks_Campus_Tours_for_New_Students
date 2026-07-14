@@ -13,7 +13,8 @@
       "pages/map/map",
       "pages/my/my",
       "pages/admin-login/admin-login",
-      "pages/admin-dashboard/admin-dashboard"
+      "pages/admin-dashboard/admin-dashboard",
+      "pages/ai-chat/ai-chat"
     ],
     "window": {
       "navigationBarTitleText": "探校之旅",
