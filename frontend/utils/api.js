@@ -180,6 +180,13 @@ const getUserBadges = async () => request({
   path: '/api/badges/me'
 });
 
+// 到达剧情指定节点时领取白名单知识徽章；接口幂等，重复调用不会重复发放。
+const obtainBadge = async (code) => request({
+  method: 'POST',
+  path: '/api/badges/obtain',
+  data: { code }
+});
+
 const completeStory = async (userIdOrStoryId, maybeStoryId) => {
   const storyId = maybeStoryId || userIdOrStoryId;
   const result = await request({
@@ -453,6 +460,7 @@ module.exports = {
   getStoryList,
   getStoryNodes,
   getUserBadges,
+  obtainBadge,
   completeStory,
   saveProgress,
   getSaveSlots,

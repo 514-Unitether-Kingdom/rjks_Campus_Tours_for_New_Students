@@ -47,11 +47,11 @@ SET @sql := IF(@exist=0,
   'DO 0');
 PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
 
--- grants_badge：到达该节点时前端调 POST /api/badges/obtain 领取的徽章 code（到点即时发章）。
+-- grants_badge：完成对应分区后到达该节点时，前端调 POST /api/badges/obtain 领取的徽章 code。
 SET @exist := (SELECT COUNT(*) FROM information_schema.COLUMNS
   WHERE TABLE_SCHEMA=@db AND TABLE_NAME='story_nodes' AND COLUMN_NAME='grants_badge');
 SET @sql := IF(@exist=0,
-  "ALTER TABLE story_nodes ADD COLUMN grants_badge VARCHAR(50) NULL COMMENT '到达此节点即发放的徽章 code'",
+  "ALTER TABLE story_nodes ADD COLUMN grants_badge VARCHAR(50) NULL COMMENT '到达完成节点后发放的徽章 code'",
   'DO 0');
 PREPARE s FROM @sql; EXECUTE s; DEALLOCATE PREPARE s;
 
@@ -68,8 +68,11 @@ SET @bg   := '/images/story_bg1.jpg';
 INSERT INTO story_nodes
  (story_id, node_key, dialogue_text, speaker, character_image_url, bg_image_url, location_id, node_type, choices_json, is_end, sort_order)
 VALUES
-(@campus_id,'life_gate_scene','欢迎来到北京工业大学平乐园校区！我是你的向导学姐。先记住几个校门：东南西北四个大门，加上东南小门、西侧小门——迷路时找校门或体育场，方向就能重新对上；西侧小门离地铁近，但只走行人。','学姐',@char,@bg,'campus_north_gate','scene',NULL,0,1),
-(@campus_id,'life_gate_map','看这片闪烁的金色区域，它就是北门；北门在校园北侧、正对校医院方向，仅供行人出入。','学姐',@char,@bg,'campus_north_gate','map',NULL,0,2),
+(@campus_id,'life_welcome_scene','欢迎来到北京工业大学平乐园校区！我是你的向导学姐。','学姐',@char,@bg,NULL,'scene',NULL,0,1),
+(@campus_id,'life_gate_scene','先记住几个校门：东南西北四个大门，加上东南小门、西侧小门——迷路时找校门或体育场，方向就能重新对上；西侧小门离地铁近，但只走行人。','学姐',@char,@bg,NULL,'scene',NULL,0,2),
+(@campus_id,'life_gate_west_map','先看校园西侧：闪烁区域分别是西门和西侧小门。西侧小门离地铁更近，但只供行人通行。','学姐',@char,@bg,'campus_west_gate,campus_west_side_gate','map',NULL,0,3),
+(@campus_id,'life_gate_northeast_map','再看北门和东门：北门正对校医院方向，东门在校园东侧，都是辨认方向的重要地标。','学姐',@char,@bg,'campus_north_gate,campus_east_gate','map',NULL,0,4),
+(@campus_id,'life_gate_southeast_map','最后看南门和东南门：它们位于校园南侧，去南部教学区和生活区时很常用。','学姐',@char,@bg,'campus_south_gate,campus_southeast_gate','map',NULL,0,5),
 (@campus_id,'life_north_dorm_scene','先带你认认宿舍区。北区是 01 到 04 号楼，离学生综合服务中心很近。先把楼号、单元和门禁位置记牢，早八才不会手忙脚乱。','学姐',@char,@bg,'north_dormitories','scene',NULL,0,3),
 (@campus_id,'life_north_dorm_map','看这片闪烁的金色区域，它就是北区宿舍（01–04 号楼）；从学生综合服务中心出发，很快就能找到入口。','学姐',@char,@bg,'north_dormitories','map',NULL,0,4),
 (@campus_id,'life_northeast_dorm_scene','东北区是 10、11 号楼，靠近北部教学区和北体育场。出门前预留十分钟，顺路熟悉银杏大道。','学姐',@char,@bg,'northeast_dormitories','scene',NULL,0,5),
@@ -187,9 +190,9 @@ VALUES
 (@campus_id,'major_archurban_end','你学院的楼就先认到这。接下来？','学姐',@char,@bg,NULL,'choice',
  '[{"text":"再去运动场转转","targetNodeId":"sport_north_scene"},{"text":"结束本次浏览","targetNodeId":"campus_end"}]',0,79),
 -- 城市交通学院
-(@campus_id,'major_traffic_scene','作为城市交通学院的同学，你常去交通楼；三教、四教是公用教学楼。先带你去认认交通楼。','学姐',@char,@bg,NULL,'scene',NULL,0,80),
-(@campus_id,'major_traffic_map','看这片闪烁的金色区域，它就是交通楼；在北体育场东侧、暖通楼往南。','学姐',@char,@bg,'transportation_building','map',NULL,0,81),
-(@campus_id,'major_traffic_end','你学院的楼就先认到这。接下来？','学姐',@char,@bg,NULL,'choice',
+(@campus_id,'major_traffic_scene','作为城市交通学院的同学，你会在城建楼和实训楼附近接触智慧城市、交通规划与实践训练；三教、四教是公用教学楼。先带你去认认这两处。','学姐',@char,@bg,NULL,'scene',NULL,0,80),
+(@campus_id,'major_traffic_map','看这片闪烁的金色区域，它就是城建楼；在月亮湖东侧的东南边缘教学区。','学姐',@char,@bg,'urban_construction_building','map',NULL,0,81),
+(@campus_id,'major_traffic_end','再看旁边的实训楼。这里与城建楼相邻，是交通方向进行实践训练的重要地点。','学姐',@char,@bg,'practice_training_building','map',
  '[{"text":"再去运动场转转","targetNodeId":"sport_north_scene"},{"text":"结束本次浏览","targetNodeId":"campus_end"}]',0,82),
 -- 数学统计学与力学学院
 (@campus_id,'major_mathstat_scene','作为数学统计学与力学学院的同学，你常去数理楼，一教也常有你们的课；三教、四教是公用教学楼。先带你认认。','学姐',@char,@bg,NULL,'scene',NULL,0,83),
@@ -235,17 +238,22 @@ INSERT INTO story_nodes
 VALUES
 (@campus_id,'campus_end','今天的校园浏览先到这里。地图上的每一栋楼，都可能成为你第一次上课、运动或和朋友见面的起点；带着它再走一遍，你很快会拥有自己的校园路线。\n\n点击完成，领取勋章！','学姐',@char,'/images/story_bg_end.jpg',NULL,'scene',NULL,1,106);
 
--- ---------- 8. 到点发章标记 ----------
--- 逛到食堂区（学生综合服务楼，生活区必经）即发"食堂时间通"；
--- 逛到运动区入口（北体育场）即发"运动时间通"——只走学习路线的同学不会走到，故不会误发。
--- 前端到达带 grants_badge 的节点时调 POST /api/badges/obtain 领取（幂等）。
-UPDATE story_nodes SET grants_badge='badge_canteen_time'
-  WHERE story_id=@campus_id AND node_key='life_service_center_scene';
-UPDATE story_nodes SET grants_badge='badge_sports_time'
-  WHERE story_id=@campus_id AND node_key='sport_north_scene';
+-- ---------- 8. 校门段落排序 ----------
+-- 校门介绍新增 3 页双地点地图，因此后移原第 3 页起的节点；分支仍按 node_key 跳转，不受影响。
+UPDATE story_nodes SET sort_order=sort_order+3
+  WHERE story_id=@campus_id AND sort_order>=3
+    AND node_key NOT IN ('life_gate_west_map', 'life_gate_northeast_map', 'life_gate_southeast_map');
 
--- ---------- 9. 两枚时间徽章定义（数据源：工大百科；方案B：点击看 detail 长文）----------
--- 发放机制：到点即发（见上 grants_badge + POST /api/badges/obtain），非通关补发。
+-- ---------- 9. 分区完成发章标记 ----------
+-- 生活区走到分支选择页后才发"食堂时间通"；运动区走到结束选择页后才发"运动时间通"。
+-- 前端到达带 grants_badge 的完成节点时调 POST /api/badges/obtain 领取（幂等）。
+UPDATE story_nodes SET grants_badge='badge_canteen_time'
+  WHERE story_id=@campus_id AND node_key='choose_interest';
+UPDATE story_nodes SET grants_badge='badge_sports_time'
+  WHERE story_id=@campus_id AND node_key='sport_end_choice';
+
+-- ---------- 10. 两枚时间徽章定义（数据源：工大百科；方案B：点击看 detail 长文）----------
+-- 发放机制：到达分区完成节点即发（见上 grants_badge + POST /api/badges/obtain），非通关补发。
 INSERT INTO badges (code, name, icon_url, description, condition_text, detail, sort_order) VALUES
 ('badge_canteen_time','🍚 食堂时间通','/images/badge_campus.png','逛完校园食堂，掌握各食堂开放时间','完成「浏览校园」并逛过食堂区',
  '【食堂开放时间 · 来源：工大百科】\n北区餐厅：早7:00-9:00 / 午11:00-13:00 / 晚16:30-18:30\n北区餐车：周一至周五(除节假日)午11:00-12:30\n清真餐厅：7:00-20:30\n奥运餐厅：早7:00-9:00 / 午11:00-13:00 / 晚16:30-18:30\n南区餐车：周一至周五(除节假日)午11:00-12:30\n美食园餐厅：6:30-20:30；风味餐厅：9:00-22:00\n天天餐厅（学生服务楼二层）：午餐11:00-14:00 / 晚餐16:30-21:30\n天天咖啡厅：工作日7:00-21:00 / 周六日9:00-21:00（天天餐厅与天天咖啡厅是两个不同的地方）\n教工餐厅：早7:00-8:30 / 午11:00-13:00\n中蓝公寓餐厅：基本伙 早7:00-9:00/午11:00-13:00/晚16:30-18:30；风味档口7:00-21:00\n（校内食堂支持美团外卖送到宿舍楼下；具体以现场为准）',

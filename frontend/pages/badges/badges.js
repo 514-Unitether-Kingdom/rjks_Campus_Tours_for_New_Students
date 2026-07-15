@@ -17,6 +17,10 @@ Page({
       this.setData({ loading: false, loadError: error.message || '勋章数据加载失败' });
     }
   },
+  showBadgeDetail(e) {
+    const detail = e.currentTarget.dataset.detail;
+    if (detail) wx.showModal({ title: '详情', content: detail, showCancel: false });
+  },
   goToStoryMode() { wx.reLaunch({ url: '/pages/story-mode/story-mode' }); },
   onPullDownRefresh() { this.loadBadges().finally(() => wx.stopPullDownRefresh()); }
 });
