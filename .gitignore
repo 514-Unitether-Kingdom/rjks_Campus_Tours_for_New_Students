@@ -21,3 +21,5 @@ frontend/project.private.config.json
 cloudflared.exe
 project.config.json
 project.private.config.json
+frontend/project.config.json
+frontend/project.private.config.json
