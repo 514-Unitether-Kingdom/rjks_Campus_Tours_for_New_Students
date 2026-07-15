@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://ai.tanxiaozhilv.uk';
 const REQUEST_TIMEOUT = 10000;
 
 const getBaseUrl = () => wx.getStorageSync('apiBaseUrl') || BASE_URL;
