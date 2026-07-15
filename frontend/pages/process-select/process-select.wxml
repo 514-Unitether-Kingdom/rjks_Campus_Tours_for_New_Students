@@ -1,10 +1,10 @@
 <view class="process-page">
   <view class="process-hero"><text class="eyebrow">CAMPUS GUIDE</text><text class="title">办事，不必手忙脚乱</text><text class="subtitle">把每件重要的小事，拆成清晰的下一步。</text></view>
   <view class="loading" wx:if="{{loading}}">正在获取办事指南…</view>
-  <view class="notice" wx:elif="{{loadError}}"><text>{{loadError}}</text><text class="retry" bindtap="loadMarkers">重新加载</text></view>
+  <view class="notice" wx:elif="{{loadError}}"><text>{{loadError}}</text><text class="retry" data-testid="process-select-retry" bindtap="loadMarkers">重新加载</text></view>
   <view class="process-list" wx:else>
-    <view class="process-card" wx:for="{{markers}}" wx:key="id" bindtap="selectProcess" data-id="{{item.id}}"><view class="status-dot {{item.completed ? 'done' : ''}}"></view><view class="process-body"><text class="process-name">{{item.name}}</text><text class="process-desc">{{item.description}}</text><text class="process-count">共 {{item.steps.length}} 个步骤 · {{item.completed ? '已完成' : '待体验'}}</text></view><text class="arrow">↗</text></view>
+    <view class="process-card" data-testid="process-card" wx:for="{{markers}}" wx:key="id" bindtap="selectProcess" data-id="{{item.id}}"><view class="status-dot {{item.completed ? 'done' : ''}}"></view><view class="process-body"><text class="process-name">{{item.name}}</text><text class="process-desc">{{item.description}}</text><text class="process-count">共 {{item.steps.length}} 个步骤 · {{item.completed ? '已完成' : '待体验'}}</text></view><text class="arrow">↗</text></view>
     <view class="empty" wx:if="{{markers.length === 0}}">暂未开放新的办事流程</view>
   </view>
-  <view class="sheet-mask" wx:if="{{activeProcess}}" bindtap="closeSheet"><view class="sheet" catchtap="noop"><view class="sheet-handle"></view><text class="sheet-title">{{activeProcess.name}}</text><text class="sheet-desc">{{activeProcess.description}}</text><view class="steps"><view class="step" wx:for="{{activeProcess.steps}}" wx:key="index"><text class="step-no">0{{index + 1}}</text><text>{{item}}</text></view></view><button class="enter" bindtap="enterStory">{{activeProcess.completed ? '再次查看流程' : '开始流程体验'}}</button></view></view>
+  <view class="sheet-mask" data-testid="process-sheet-mask" wx:if="{{activeProcess}}" bindtap="closeSheet"><view class="sheet" catchtap="noop"><view class="sheet-handle"></view><text class="sheet-title">{{activeProcess.name}}</text><text class="sheet-desc">{{activeProcess.description}}</text><view class="steps"><view class="step" wx:for="{{activeProcess.steps}}" wx:key="index"><text class="step-no">0{{index + 1}}</text><text>{{item}}</text></view></view><button class="enter" data-testid="process-enter-story" bindtap="enterStory">{{activeProcess.completed ? '再次查看流程' : '开始流程体验'}}</button></view></view>
 </view>

@@ -8,7 +8,7 @@ Page({
     college: '',
     major: '',
     saving: false,
-    gradeList: ['大一', '大二', '大三', '大四', '研一', '研二', '研三'],
+    gradeList: ['大一', '大二', '大三', '大四', '研一', '研二', '研三', '博一', '博二', '博三', '博四及以上'],
     collegeList: [
       '信息学部',
       '城市建设学部',
@@ -65,16 +65,20 @@ Page({
   },
 
   fillForm(userInfo = {}) {
-    const college = userInfo.college === '未选择' ? '' : (userInfo.college || '');
-    const major = userInfo.major === '未选择' ? '' : (userInfo.major || '');
+    const incomingGrade = userInfo.grade === '未选择' ? '' : (userInfo.grade || '');
+    const grade = this.data.gradeList.includes(incomingGrade) ? incomingGrade : '';
+    const incomingCollege = userInfo.college === '未选择' ? '' : (userInfo.college || '');
+    const college = this.data.collegeList.includes(incomingCollege) ? incomingCollege : '';
+    const incomingMajor = userInfo.major === '未选择' ? '' : (userInfo.major || '');
     const collegeIndex = this.data.collegeList.indexOf(college);
     const majorList = this.data.majorMap[college] || [];
+    const major = majorList.includes(incomingMajor) ? incomingMajor : '';
     const majorIndex = majorList.indexOf(major);
 
     this.setData({
       name: userInfo.name || '',
       gender: userInfo.gender || '',
-      grade: userInfo.grade === '未选择' ? '' : (userInfo.grade || ''),
+      grade,
       college,
       major,
       collegeIndex,
@@ -129,6 +133,24 @@ Page({
     if (!this.data.gender) {
       wx.showToast({ title: '请选择性别', icon: 'none' });
       return;
+    }
+
+    if (this.data.grade && !this.data.gradeList.includes(this.data.grade)) {
+      wx.showToast({ title: '学员信息无效：年级不在合法名录中', icon: 'none' });
+      return;
+    }
+
+    if (this.data.college && !this.data.collegeList.includes(this.data.college)) {
+      wx.showToast({ title: '学员信息无效：学院不在合法名录中', icon: 'none' });
+      return;
+    }
+
+    if (this.data.major) {
+      const validMajors = this.data.majorMap[this.data.college] || [];
+      if (!this.data.college || !validMajors.includes(this.data.major)) {
+        wx.showToast({ title: '学员信息无效：专业与学院不匹配', icon: 'none' });
+        return;
+      }
     }
 
     const profile = {
