@@ -20,7 +20,8 @@ const markerPositionFromLocation = (marker) => {
 };
 
 Page({
-  data: { markers: [], loading: true, loadError: '' },
+  // 校园地图高清原图放服务器（避免打进小程序主包超 2MB），从后端 https 加载
+  data: { markers: [], loading: true, loadError: '', mapUrl: api.getBaseUrl() + '/maps/map2.png' },
 
   onShow() { this.loadMarkers(); },
 
