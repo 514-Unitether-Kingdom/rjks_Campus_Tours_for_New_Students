@@ -4,6 +4,7 @@
       "pages/profile/profile",
       "pages/home/home",
       "pages/story-mode/story-mode",
+      "pages/process-map/process-map",
       "pages/campus-story/campus-story",
       "pages/process-select/process-select",
       "pages/process-story/process-story",
@@ -12,7 +13,8 @@
       "pages/map/map",
       "pages/my/my",
       "pages/admin-login/admin-login",
-      "pages/admin-dashboard/admin-dashboard"
+      "pages/admin-dashboard/admin-dashboard",
+      "pages/ai-chat/ai-chat"
     ],
     "window": {
       "navigationBarTitleText": "探校之旅",

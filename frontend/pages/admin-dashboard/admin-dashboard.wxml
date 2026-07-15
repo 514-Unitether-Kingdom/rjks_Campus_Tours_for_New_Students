@@ -1,90 +1,204 @@
-<view class="admin-container">
-  <view class="header-area">
-    <text class="page-title">🔐 管理后台</text>
-    <text class="page-subtitle">数据统计 · 内容管理</text>
+<view class="admin-page">
+  <view class="admin-head">
+    <text class="eyebrow">ADMIN / CONTROL ROOM</text>
+    <text class="title">校园数据台</text>
+    <text class="subtitle">管理员数据视图与后台测试故事目录。</text>
   </view>
 
-  <!-- 统计卡片 -->
-  <view class="stats-grid">
-    <view class="stat-card">
-      <text class="stat-number">{{stats.totalUsers || 0}}</text>
-      <text class="stat-label">总注册用户</text>
+  <view class="metrics">
+    <view>
+      <text>{{stats.totalUsers}}</text>
+      <label>注册用户</label>
     </view>
-    <view class="stat-card">
-      <text class="stat-number">{{stats.completedStories || 0}}</text>
-      <text class="stat-label">剧情完成数</text>
+    <view>
+      <text>{{stats.completedStories}}</text>
+      <label>真实完成记录</label>
     </view>
-    <view class="stat-card">
-      <text class="stat-number">{{stats.totalBadges || 0}}</text>
-      <text class="stat-label">勋章发放数</text>
-    </view>
-  </view>
-
-  <!-- Tab切换 -->
-  <view class="tab-bar">
-    <view class="tab-item {{activeTab === 'users' ? 'active' : ''}}" bindtap="switchTab" data-tab="users">
-      <text>👥 用户数据</text>
-    </view>
-    <view class="tab-item {{activeTab === 'stories' ? 'active' : ''}}" bindtap="switchTab" data-tab="stories">
-      <text>📖 剧情管理</text>
+    <view>
+      <text>{{stats.totalBadges}}</text>
+      <label>真实勋章记录</label>
     </view>
   </view>
 
-  <!-- 用户数据Tab -->
-  <view class="tab-content" wx:if="{{activeTab === 'users'}}">
-    <view class="action-bar">
-      <button class="btn-export" bindtap="exportUsers">
-        📥 导出用户数据 (Excel)
-      </button>
-    </view>
-    <view class="user-table">
-      <view class="table-header">
-        <text class="col-name">姓名</text>
-        <text class="col-gender">性别</text>
-        <text class="col-college">学院</text>
-        <text class="col-time">注册时间</text>
-      </view>
-      <view class="table-row" wx:for="{{stats.users}}" wx:key="id">
-        <text class="col-name">{{item.name || '未知'}}</text>
-        <text class="col-gender">{{item.gender || '-'}}</text>
-        <text class="col-college">{{item.college || '-'}}</text>
-        <text class="col-time">{{item.registerTime || '-'}}</text>
-      </view>
-      <view class="table-empty" wx:if="{{stats.users.length === 0}}">
-        <text>暂无用户数据</text>
-      </view>
-    </view>
+  <view class="loading" wx:if="{{loading}}">正在同步后台数据...</view>
+  <view class="notice" wx:elif="{{loadError}}">
+    <text>{{loadError}}</text>
+    <text class="retry" data-testid="admin-dashboard-retry" bindtap="loadDashboard">重新加载</text>
   </view>
 
-  <!-- 剧情管理Tab -->
-  <view class="tab-content" wx:if="{{activeTab === 'stories'}}">
-    <view class="action-bar">
-      <button class="btn-export" bindtap="exportStories">
-        📤 导出剧情内容 (TXT)
-      </button>
+  <view wx:else>
+    <view class="tabs">
+      <text class="{{activeTab === 'users' ? 'active' : ''}}" data-testid="admin-tab-users" bindtap="switchTab" data-tab="users">用户</text>
+      <text class="{{activeTab === 'stories' ? 'active' : ''}}" data-testid="admin-tab-stories" bindtap="switchTab" data-tab="stories">故事</text>
     </view>
-    
-    <view class="story-preview">
-      <view class="story-preview-item" wx:for="{{storyList}}" wx:key="id">
-        <view class="preview-header" bindtap="toggleStory" data-id="{{item.id}}">
-          <text class="preview-name">{{item.name}}</text>
-          <text class="preview-type {{item.type === '长故事' ? 'type-long' : 'type-short'}}">
-            {{item.type}}
-          </text>
-          <text class="preview-arrow">{{item.expanded ? '▼' : '▶'}}</text>
+
+    <view class="panel" wx:if="{{activeTab === 'users'}}">
+      <view class="panel-head">
+        <view>
+          <text>用户名册</text>
+          <text class="panel-desc">点击用户查看个人剧情与勋章归属。</text>
         </view>
-        <view class="preview-body" wx:if="{{item.expanded}}">
-          <view class="preview-node" wx:for="{{item.nodes}}" wx:for-item="node" wx:key="id">
-            <text class="node-id">第{{index + 1}}节</text>
-            <text class="node-character">{{node.character || '系统'}}：</text>
-            <text class="node-text">{{node.text}}</text>
+        <text data-testid="admin-export-users" bindtap="exportUsers">导出 Excel</text>
+      </view>
+
+      <view class="list-tools">
+        <text>注册用户</text>
+        <text data-testid="admin-user-sort" bindtap="toggleUserSort">注册时间 {{userSortOrder === 'desc' ? '新到旧' : '旧到新'}}</text>
+      </view>
+      <view class="user-row" data-testid="admin-user-row" wx:for="{{users}}" wx:key="id" bindtap="openUserDetail" data-id="{{item.id}}">
+        <view>
+          <text class="user-name">{{item.name || '未完善资料'}}</text>
+          <text>{{item.college || '-'}} · {{item.major || '-'}} · 注册 {{item.registerTimeText}}</text>
+        </view>
+        <text>{{item.completedStories}} / {{item.totalBadges}}</text>
+      </view>
+      <view class="empty" wx:if="{{users.length === 0}}">暂无用户数据</view>
+    </view>
+
+    <view class="panel" wx:else>
+      <view class="panel-head">
+        <view>
+          <text>故事结构</text>
+          <text class="panel-desc">{{adminStorySummary}}</text>
+        </view>
+        <text data-testid="admin-export-stories" bindtap="exportStories">导出 TXT</text>
+      </view>
+
+      <view class="story-group" wx:for="{{storyGroups}}" wx:key="id" wx:for-item="group">
+        <view class="group-title">
+          <view>
+            <text class="group-name">{{group.name}}</text>
+            <text class="group-meta">{{group.storyCount}} 个故事 · {{group.nodeCount}} 个节点</text>
+          </view>
+          <text class="fake-badge" wx:if="{{group.fake}}">仅后台测试</text>
+        </view>
+
+        <view class="folder-block" wx:for="{{group.folders}}" wx:key="id" wx:for-item="folder">
+          <view class="folder-line" data-testid="admin-story-folder" bindtap="toggleFolder" data-groupid="{{group.id}}" data-folderid="{{folder.id}}">
+            <view>
+              <text class="folder-name">{{folder.expanded ? 'v' : '>'}} {{folder.name}}</text>
+              <text class="folder-meta">{{folder.storyCount}} 个故事 · {{folder.nodeCount}} 个节点</text>
+            </view>
+            <text class="folder-state">{{folder.expanded ? '收起' : '展开'}}</text>
+          </view>
+
+          <view class="folder-stories" wx:if="{{folder.expanded}}">
+            <view class="story-row" wx:for="{{folder.stories}}" wx:key="id" wx:for-item="story">
+              <view class="story-line" data-testid="admin-story-preview-entry" bindtap="openStoryPreview" data-groupid="{{group.id}}" data-folderid="{{folder.id}}" data-storyid="{{story.id}}">
+                <view>
+                  <text class="user-name">{{story.name}}</text>
+                  <text>{{story.type}} · {{story.nodeCount}} 个节点 · {{story.status}}</text>
+                </view>
+                <text>预览 ></text>
+              </view>
+              <view class="story-tools">
+                <text data-testid="admin-story-toggle-nodes" catchtap="toggleStory" data-groupid="{{group.id}}" data-folderid="{{folder.id}}" data-storyid="{{story.id}}">
+                  {{story.expanded ? '收起节点列表' : '展开节点列表'}}
+                </text>
+              </view>
+              <view class="node-list" wx:if="{{story.expanded}}">
+                <view wx:for="{{story.nodes}}" wx:for-item="node" wx:key="id">
+                  <text>{{node.character || '系统'}} </text>{{node.text}}
+                </view>
+              </view>
+            </view>
           </view>
         </view>
       </view>
     </view>
   </view>
 
-  <view class="logout-area">
-    <button class="btn-logout" bindtap="logout">退出登录</button>
+  <text class="logout" data-testid="admin-logout" bindtap="logout">退出管理员会话</text>
+
+  <view class="user-detail-mask" wx:if="{{userDetailVisible}}">
+    <view class="user-detail-sheet">
+      <view class="preview-head">
+        <view>
+          <text class="preview-title">{{detailUser.name || '未完善资料'}}</text>
+          <text class="preview-subtitle">{{detailUser.college || '-'}} · {{detailUser.major || '-'}}</text>
+          <text class="preview-subtitle">注册时间：{{detailUser.registerTimeText}}</text>
+        </view>
+        <text class="preview-close" data-testid="admin-user-detail-close" bindtap="closeUserDetail">关闭</text>
+      </view>
+
+      <view class="detail-actions">
+        <view class="detail-action {{showCompletedDetail ? 'active' : ''}}" data-testid="admin-user-completed-toggle" bindtap="toggleCompletedDetail">
+          <text>完成剧情</text>
+          <text>{{detailUser.completedStories}} 条</text>
+        </view>
+        <view class="detail-action {{showBadgeDetail ? 'active' : ''}}" data-testid="admin-user-badges-toggle" bindtap="toggleBadgeDetail">
+          <text>获得勋章</text>
+          <text>{{detailUser.totalBadges}} 枚</text>
+        </view>
+      </view>
+
+      <view class="detail-block" wx:if="{{showCompletedDetail}}">
+        <text class="detail-title">完成剧情明细</text>
+        <view wx:if="{{detailUser.completedStoryList.length}}">
+          <view class="detail-row" wx:for="{{detailUser.completedStoryList}}" wx:key="id">
+            <text>{{item.name}} · {{item.type}}</text>
+            <text>{{item.completedTimeText}}</text>
+          </view>
+        </view>
+        <text class="detail-empty" wx:else>暂无完成记录</text>
+      </view>
+
+      <view class="detail-block" wx:if="{{showBadgeDetail}}">
+        <text class="detail-title">获得勋章明细</text>
+        <view wx:if="{{detailUser.badgeList.length}}">
+          <view class="detail-row" wx:for="{{detailUser.badgeList}}" wx:key="id">
+            <text>{{item.name}} · 来自 {{item.storyName}}</text>
+            <text>{{item.obtainedTimeText}}</text>
+          </view>
+        </view>
+        <text class="detail-empty" wx:else>暂无勋章记录</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="export-text-mask" wx:if="{{exportTextVisible}}">
+    <view class="export-text-sheet">
+      <view class="preview-head">
+        <view>
+          <text class="preview-title">剧情 TXT 导出</text>
+          <text class="preview-subtitle">已生成文本内容，可预览或复制全文。</text>
+        </view>
+        <text class="preview-close" data-testid="admin-export-text-close" bindtap="closeExportText">关闭</text>
+      </view>
+
+      <scroll-view class="export-text-content" scroll-y="true">
+        <text>{{exportTextContent}}</text>
+      </scroll-view>
+
+      <view class="preview-foot">
+        <button class="preview-btn primary" data-testid="admin-export-text-copy" bindtap="copyExportText">复制全文</button>
+        <button class="preview-btn" data-testid="admin-export-text-done" bindtap="closeExportText">完成</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="preview-mask" wx:if="{{previewVisible}}">
+    <view class="preview-panel">
+      <view class="preview-head">
+        <view>
+          <text class="preview-title">{{previewStory.name}}</text>
+          <text class="preview-subtitle">{{previewStory.type}} · {{previewStory.status}} · 第 {{previewNodeIndex + 1}} / {{previewTotalNodes}} 个节点</text>
+        </view>
+        <text class="preview-close" data-testid="admin-story-preview-close" bindtap="closeStoryPreview">退出</text>
+      </view>
+
+      <view class="preview-body">
+        <text class="preview-marker">{{previewNode.isEnd ? 'END' : 'NODE'}} / {{previewNodeIndex + 1}}</text>
+        <text class="preview-speaker">{{previewNode.character || '系统'}}</text>
+        <text class="preview-text">{{previewNode.text}}</text>
+      </view>
+
+      <view class="preview-foot">
+        <button class="preview-btn" data-testid="admin-story-preview-prev" bindtap="prevPreviewNode" disabled="{{previewIsFirst}}">上一节点</button>
+        <button class="preview-btn primary" data-testid="admin-story-preview-next" bindtap="nextPreviewNode" disabled="{{previewCompleteDisabled}}">
+          {{previewCompleteText}}
+        </button>
+      </view>
+    </view>
   </view>
 </view>
