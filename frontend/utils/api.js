@@ -21,6 +21,20 @@ const clearAdminState = () => {
   getApp().globalData.isAdmin = false;
 };
 
+const redirectToAdminLogin = () => {
+  wx.showToast({ title: '登录已过期，请重新登录', icon: 'none' });
+  wx.redirectTo({
+    url: '/pages/admin-login/admin-login',
+    fail: () => wx.reLaunch({ url: '/pages/admin-login/admin-login' })
+  });
+};
+
+const handleAdminAuthFailure = (reject) => {
+  clearAdminState();
+  redirectToAdminLogin();
+  reject({ code: 1003, message: '登录已过期，请重新登录' });
+};
+
 const normalizeError = (err, fallbackMessage) => ({
   code: err && err.code ? err.code : 5000,
   message: err && err.message ? err.message : fallbackMessage,
@@ -56,7 +70,7 @@ const request = ({ method = 'GET', path, data = {}, auth = true, tokenKey = 'tok
       if (res.statusCode === 401 || body.code === 1002 || body.code === 1003) {
         if (tokenKey === 'adminToken') {
           clearAdminState();
-          wx.redirectTo({ url: '/pages/admin-login/admin-login' });
+          redirectToAdminLogin();
         } else {
           clearLoginState();
           wx.reLaunch({ url: '/pages/login/login' });
@@ -247,6 +261,14 @@ const downloadAdminFile = (path, fileType) => new Promise((resolve, reject) => {
       Authorization: `Bearer ${getToken('adminToken')}`
     },
     success: (res) => {
+      if (res.statusCode === 401) {
+        handleAdminAuthFailure(reject);
+        return;
+      }
+      if (res.statusCode === 403) {
+        reject({ code: 1004, message: '无权操作该资源' });
+        return;
+      }
       if (res.statusCode !== 200) {
         reject({ code: 5000, message: '导出失败' });
         return;
@@ -269,6 +291,14 @@ const downloadAdminTextFile = (path) => new Promise((resolve, reject) => {
       Authorization: `Bearer ${getToken('adminToken')}`
     },
     success: (res) => {
+      if (res.statusCode === 401) {
+        handleAdminAuthFailure(reject);
+        return;
+      }
+      if (res.statusCode === 403) {
+        reject({ code: 1004, message: '无权操作该资源' });
+        return;
+      }
       if (res.statusCode !== 200) {
         reject({ code: 5000, message: '导出失败' });
         return;
@@ -441,5 +471,6 @@ module.exports = {
   askQuestionStream,
   logout,
   clearLoginState,
-  clearAdminState
+  clearAdminState,
+  redirectToAdminLogin
 };
