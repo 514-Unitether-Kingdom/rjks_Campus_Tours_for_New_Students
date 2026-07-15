@@ -143,6 +143,13 @@ INSERT IGNORE INTO process_markers (code, name, description, steps, position_x, 
 
 -- ---------------------------------------------
 -- 校园地图
+--   高清底图 map2.png 已移到后端 public/maps/ 经 HTTPS 托管（不占小程序主包）。
+--   校园地图页(map)与流程地图(process-map)都用这张服务器图；原 /images/campus_map_full.png
+--   只是占位图（图上写着"地图主体"），不再使用。
+--   ⚠ 真机需把 ai.tanxiaozhilv.uk 加进小程序后台 downloadFile 合法域名。
 -- ---------------------------------------------
 INSERT IGNORE INTO campus_maps (name, image_url, version, is_active) VALUES
-('平乐园校区平面图', '/images/campus_map_full.png', 'v1', 1);
+('平乐园校区平面图', 'https://ai.tanxiaozhilv.uk/maps/map2.png', 'v2', 1);
+-- 幂等修正：已建库（image_url 仍是旧占位图）重跑本文件时一并纠正
+UPDATE campus_maps SET image_url = 'https://ai.tanxiaozhilv.uk/maps/map2.png', version = 'v2'
+ WHERE is_active = 1 AND image_url = '/images/campus_map_full.png';
