@@ -5,21 +5,32 @@ Page({
     username: '',
     password: '',
     errorMsg: '',
-    loading: false
+    loading: false,
+    canSubmit: false
+  },
+
+  updateSubmitState(username, password) {
+    this.setData({
+      canSubmit: !!(username.trim() && password.trim())
+    });
   },
 
   onUserInput(e) {
+    const username = e.detail.value;
     this.setData({ 
-      username: e.detail.value,
+      username,
       errorMsg: '' 
     });
+    this.updateSubmitState(username, this.data.password);
   },
 
   onPwdInput(e) {
+    const password = e.detail.value;
     this.setData({ 
-      password: e.detail.value,
+      password,
       errorMsg: '' 
     });
+    this.updateSubmitState(this.data.username, password);
   },
 
   async login() {
@@ -32,6 +43,14 @@ Page({
     }
     if (!password.trim()) {
       this.setData({ errorMsg: '请输入密码' });
+      return;
+    }
+    if (username.trim() !== username.trim().toLowerCase()) {
+      this.setData({
+        password: '',
+        canSubmit: false,
+        errorMsg: '用户名或密码错误，请重试'
+      });
       return;
     }
 
@@ -57,11 +76,10 @@ Page({
       wx.hideLoading();
       this.setData({ 
         loading: false,
-        errorMsg: error.message || '用户名或密码错误，请重试'
+        errorMsg: error.message || '用户名或密码错误，请重试',
+        password: '',
+        canSubmit: false
       });
-      
-      // 清空密码
-      this.setData({ password: '' });
     }
   },
 

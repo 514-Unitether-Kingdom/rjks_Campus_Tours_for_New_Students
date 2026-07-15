@@ -1,0 +1,4 @@
+<view class="location-map">
+  <canvas type="2d" id="map-canvas" class="map-canvas" style="height: {{canvasHeight}}px;"></canvas>
+  <view class="map-caption" wx:if="{{locationName}}">当前位置：{{locationName}}</view>
+</view>

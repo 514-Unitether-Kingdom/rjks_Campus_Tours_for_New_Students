@@ -16,6 +16,11 @@ exports.toNode = (row) => ({
   character: row.speaker,
   characterImage: row.character_image_url,
   text: row.dialogue_text,
+  locationId: row.location_id || null,
+  nodeType: row.node_type || 'scene',
+  choices: row.choices_json ? (typeof row.choices_json === 'string' ? JSON.parse(row.choices_json) : row.choices_json) : [],
+  // grantsBadge：到达此节点时前端调 POST /api/badges/obtain 领取的徽章 code（无则 null）。
+  grantsBadge: row.grants_badge || null,
   isEnd: !!row.is_end,
   sortOrder: row.sort_order
 });
@@ -38,6 +43,9 @@ exports.toBadge = (row, obtained) => ({
   name: row.name,
   icon: row.icon_url,
   description: row.description,
+  // detail：徽章详情长文（如"食堂时间/运动时间"徽章里全部开放时间与价格）。
+  // 前端勋章页点击徽章时弹窗展示；普通徽章为空串，前端据此决定是否可点。
+  detail: row.detail || '',
   obtained: !!obtained
 });
 

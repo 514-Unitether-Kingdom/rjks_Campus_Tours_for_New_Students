@@ -22,7 +22,15 @@ page { background: #F5F7FA; height: 100vh; overflow: hidden; }
   padding: 90rpx 40rpx 20rpx;
   text-align: center;
 }
-.welcome-icon { font-size: 88rpx; line-height: 1.2; }
+/* 用 CSS 圆徽章代替 emoji，安卓机型也稳定显示 */
+.welcome-badge {
+  width: 96rpx; height: 96rpx; margin: 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4A90D9, #6CB4EE);
+  color: #FFFFFF; font-size: 40rpx; font-weight: bold; letter-spacing: 2rpx;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6rpx 18rpx rgba(74, 144, 217, 0.3);
+}
 .welcome-title { font-size: 40rpx; font-weight: bold; color: #2C3E50; margin-top: 16rpx; }
 .welcome-sub { font-size: 26rpx; color: #95A5A6; margin-top: 14rpx; line-height: 1.6; }
 .sugg-wrap {
@@ -101,12 +109,15 @@ page { background: #F5F7FA; height: 100vh; overflow: hidden; }
   margin-top: 16rpx; padding-top: 14rpx;
   border-top: 1rpx solid #F0F2F5;
 }
+/* 文字胶囊按钮，不依赖 emoji 字体，任何机型都稳定显示 */
 .fb-btn {
-  font-size: 34rpx; opacity: 0.35;
-  transition: opacity 0.15s, transform 0.15s;
+  font-size: 24rpx; color: #95A5A6;
+  padding: 8rpx 24rpx; border-radius: 24rpx;
+  border: 1rpx solid #E4E8EC;
+  transition: all 0.15s;
 }
-.fb-btn.up { opacity: 1; transform: scale(1.12); }
-.fb-btn.down { opacity: 1; transform: scale(1.12); }
+.fb-btn.up { color: #4A90D9; border-color: #9CC5EC; background: #EAF3FC; }
+.fb-btn.down { color: #E67E22; border-color: #F0C08A; background: #FDF0E6; }
 
 /* ===== 底部输入栏：华为云风格圆角卡片 + 右下角小圆发送按钮 ===== */
 .input-bar {

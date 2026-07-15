@@ -28,6 +28,7 @@ module.exports = {
   SENSITIVE_CONTENT: 3103,                 // AI 助手：内容被安全审核拦截
   RATE_LIMITED: 3104,                      // AI 助手：提问太频繁
   AI_UNAVAILABLE: 3105,                    // AI 助手：模型暂不可用
+  BADGE_NOT_OBTAINABLE: 3106,              // 该徽章不支持主动领取（非白名单）
 
   // ---- 4000 资源不存在 ----
   // 后端 A
@@ -41,6 +42,7 @@ module.exports = {
   EXPORT_NO_DATA: 4105,                    // 无数据可导出，不生成空文件（BR-36）
   QA_RECORD_NOT_FOUND: 4106,               // AI 助手：问答记录不存在
   KB_ENTRY_NOT_FOUND: 4107,                // AI 助手：知识条目不存在
+  BADGE_NOT_FOUND: 4108,                   // 徽章不存在（如种子数据未导入）
 
   // ---- 5000 服务端 ----
   SERVER_ERROR: 5000

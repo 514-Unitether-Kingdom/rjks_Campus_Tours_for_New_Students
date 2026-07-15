@@ -37,7 +37,7 @@
 
   <!-- AI 新生助手入口 -->
   <view class="ai-entry" bindtap="goToAiChat" hover-class="ai-entry-hover" hover-stay-time="60">
-    <view class="ai-entry-icon">🤖</view>
+    <view class="ai-entry-badge">AI</view>
     <view class="ai-entry-text">
       <text class="ai-entry-title">AI 新生助手</text>
       <text class="ai-entry-sub">校历、校车、宿舍、食堂……校园的事儿随便问</text>
