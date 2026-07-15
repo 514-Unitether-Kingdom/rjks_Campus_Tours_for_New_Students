@@ -61,12 +61,6 @@ Page({
     });
   },
 
-  goAdminLogin() {
-    wx.navigateTo({
-      url: '/pages/admin-login/admin-login'
-    });
-  },
-
   handleLogout() {
     wx.showModal({
       title: '确定退出登录？',

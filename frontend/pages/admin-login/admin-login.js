@@ -48,7 +48,7 @@ Page({
       wx.setStorageSync('adminToken', result.token);
       
       setTimeout(() => {
-        wx.navigateTo({
+        wx.redirectTo({
           url: '/pages/admin-dashboard/admin-dashboard'
         });
       }, 500);
@@ -66,6 +66,11 @@ Page({
   },
 
   goBack() {
-    wx.navigateBack();
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+      return;
+    }
+    wx.reLaunch({ url: '/pages/home/home' });
   }
 });

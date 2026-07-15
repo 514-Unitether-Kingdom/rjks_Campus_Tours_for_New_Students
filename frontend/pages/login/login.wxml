@@ -10,7 +10,7 @@
 
   <!-- 登录按钮区域 -->
   <view class="login-area">
-    <button class="btn-login" bindtap="handleLogin" loading="{{loggingIn}}" disabled="{{checking || loggingIn}}">
+    <button class="btn-login" data-testid="login-submit" bindtap="handleLogin" loading="{{loggingIn}}" disabled="{{checking || loggingIn}}">
       {{checking ? '检查登录状态...' : '微信授权登录'}}
     </button>
     <text class="login-tip">首次登录需要授权</text>
