@@ -4,7 +4,9 @@ const { CAMPUS_MAP, getLocation } = require('../../utils/campus-map');
 // 以地点 ID 作为流程入口的唯一定位来源；后端旧坐标仅作为未知流程的兼容兜底。
 const markerLocationIds = {
   medical: 'school_hospital',
-  card: 'student_service_center'
+  card: 'student_service_center',
+  course_select: 'no3_teaching_building',   // 选课攻略 → 第三教学楼
+  overseas_exchange: 'science_building'      // 境外交流 → 科学楼（国际处 科学楼221）
 };
 
 const markerPositionFromLocation = (marker) => {
