@@ -1,6 +1,6 @@
 // map2.png（2884 × 1940）专用地点配置。坐标独立于页面尺寸，更换底图时只改本文件。
 const CAMPUS_MAP = {
-  id: 'pingyuan-campus-map2', image: '/images/map2.png', width: 2884, height: 1940,
+  id: 'pingyuan-campus-map2', image: 'https://ai.tanxiaozhilv.uk/maps/map2.png', width: 2884, height: 1940,
   locations: [
     ['no1_teaching_building','第一教学楼',[[1065,413],[1280,413],[1280,505],[1065,505]]],['no2_teaching_building','第二教学楼',[[1067,516],[1122,516],[1122,679],[1067,679]]],['no3_teaching_building','第三教学楼',[[1437,910],[1728,910],[1728,985],[1437,985]]],['no4_teaching_building','第四教学楼',[[2102,869],[2312,869],[2312,969],[2102,969]]],
     ['material_building','材料楼',[[1066,687],[1278,687],[1278,780],[1066,780]]],['information_building','信息楼',[[1068,1000],[1195,1000],[1195,1153],[1068,1153]]],['information_building_east','信息楼东',[[1135,1049],[1177,1049],[1177,1125],[1135,1125]]],['mechanical_electrical_building','机电楼',[[694,381],[810,381],[810,540],[694,540]]],
