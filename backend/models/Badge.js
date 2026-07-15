@@ -12,6 +12,22 @@ const Badge = {
     return rows[0] || null;
   },
 
+  async findByCode(code) {
+    const [rows] = await db.query('SELECT * FROM badges WHERE code = ?', [code]);
+    return rows[0] || null;
+  },
+
+  // 到点即时发章（浏览校园逛到食堂/运动区时调用）。INSERT IGNORE 幂等：
+  // 重复走到同一区域不会重复发、也不撞 (user_id,badge_id) 主键。
+  // 返回 alreadyObtained，供前端决定要不要弹"获得新徽章"提示。
+  async grantByCode(userId, badgeId, storyId) {
+    const [ins] = await db.query(
+      'INSERT IGNORE INTO user_badges (user_id, badge_id, story_id) VALUES (?, ?, ?)',
+      [userId, badgeId, storyId]
+    );
+    return { alreadyObtained: ins.affectedRows === 0 };
+  },
+
   async listObtainedIds(userId) {
     const [rows] = await db.query(
       'SELECT badge_id FROM user_badges WHERE user_id = ?',
