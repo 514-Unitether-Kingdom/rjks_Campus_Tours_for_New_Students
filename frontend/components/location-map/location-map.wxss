@@ -1,0 +1,1 @@
+.location-map{width:100%;border-radius:20rpx;overflow:hidden;background:#edf4ee}.map-canvas{display:block;width:100%;background:#edf4ee}.map-caption{padding:16rpx 20rpx;background:#143629;color:#fff7d6;font-size:26rpx;letter-spacing:1rpx}

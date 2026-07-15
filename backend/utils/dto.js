@@ -16,6 +16,9 @@ exports.toNode = (row) => ({
   character: row.speaker,
   characterImage: row.character_image_url,
   text: row.dialogue_text,
+  locationId: row.location_id || null,
+  nodeType: row.node_type || 'scene',
+  choices: row.choices_json ? (typeof row.choices_json === 'string' ? JSON.parse(row.choices_json) : row.choices_json) : [],
   isEnd: !!row.is_end,
   sortOrder: row.sort_order
 });
