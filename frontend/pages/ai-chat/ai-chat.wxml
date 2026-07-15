@@ -3,7 +3,7 @@
 
     <!-- 空态：欢迎 + 推荐问题 -->
     <view wx:if="{{messages.length === 0}}" class="welcome">
-      <view class="welcome-icon">🎓</view>
+      <view class="welcome-badge">AI</view>
       <view class="welcome-title">探校 AI 新生助手</view>
       <view class="welcome-sub">校历、校车、一卡通、宿舍、食堂……新生的事儿都能问我</view>
       <view wx:if="{{suggestions.length}}" class="sugg-wrap">
@@ -31,8 +31,8 @@
 
         <!-- 点赞点踩 -->
         <view wx:if="{{item.role === 'assistant' && item.recordId && !item.streaming}}" class="fb-row">
-          <text class="fb-btn {{item.feedback === 1 ? 'up' : ''}}" data-idx="{{index}}" data-value="1" bindtap="onFeedback">👍</text>
-          <text class="fb-btn {{item.feedback === -1 ? 'down' : ''}}" data-idx="{{index}}" data-value="-1" bindtap="onFeedback">👎</text>
+          <text class="fb-btn {{item.feedback === 1 ? 'up' : ''}}" data-idx="{{index}}" data-value="1" bindtap="onFeedback">有用</text>
+          <text class="fb-btn {{item.feedback === -1 ? 'down' : ''}}" data-idx="{{index}}" data-value="-1" bindtap="onFeedback">没用</text>
         </view>
       </view>
     </view>

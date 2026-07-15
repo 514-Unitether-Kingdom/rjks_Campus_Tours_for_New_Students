@@ -104,9 +104,19 @@ page {
     box-shadow: 0 8rpx 24rpx rgba(74, 144, 217, 0.28);
   }
   .ai-entry-hover { transform: scale(0.98); }
-  .ai-entry-icon {
-    font-size: 56rpx;
+  .ai-entry-badge {
+    width: 72rpx;
+    height: 72rpx;
     margin-right: 22rpx;
+    border-radius: 20rpx;
+    background: rgba(255, 255, 255, 0.22);
+    color: #FFFFFF;
+    font-size: 32rpx;
+    font-weight: bold;
+    letter-spacing: 2rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .ai-entry-text {
     flex: 1;
