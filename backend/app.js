@@ -51,6 +51,13 @@ app.use('/kb-images', express.static(path.join(__dirname, 'public', 'kb-images')
   setHeaders: (res) => res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
 }));
 
+// 2.6 大地图静态托管：/maps/xxx.png → backend/public/maps/
+// 校园/流程地图高清原图（单张 1MB+）放服务器，避免打进小程序主包（2MB 上限）。
+app.use('/maps', express.static(path.join(__dirname, 'public', 'maps'), {
+  maxAge: '7d',
+  setHeaders: (res) => res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
+}));
+
 // 3. 注册路由（前端访问的就是这些地址）
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
