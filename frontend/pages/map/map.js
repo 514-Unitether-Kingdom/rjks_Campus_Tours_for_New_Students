@@ -2,7 +2,7 @@ const api = require('../../utils/api');
 
 const MAP_CACHE_KEY = 'activeMapCache';
 const MAP_CACHE_AGE = 24 * 60 * 60 * 1000;
-const MAP_LOAD_TIMEOUT = 5000;
+const MAP_LOAD_TIMEOUT = 12000;
 const LONG_PRESS_DELAY = 500;
 const LONG_PRESS_MOVE_LIMIT = 10;
 const SCALE_GUARD_TIME = 800;
@@ -125,29 +125,11 @@ Page({
   },
 
   prepareImage(imageUrl) {
-    const normalized = this.normalizeImageUrl(imageUrl);
-    if (!/^https?:\/\//.test(normalized)) {
-      return Promise.resolve(normalized);
-    }
-
-    return new Promise((resolve, reject) => {
-      wx.downloadFile({
-        url: normalized,
-        success: (res) => {
-          if (res.statusCode !== 200) {
-            reject(new Error('地图资源更新中，请稍后查看'));
-            return;
-          }
-
-          wx.saveFile({
-            tempFilePath: res.tempFilePath,
-            success: (saveRes) => resolve(saveRes.savedFilePath),
-            fail: () => resolve(res.tempFilePath)
-          });
-        },
-        fail: () => reject(new Error('地图下载失败，请检查网络'))
-      });
-    });
+    // 网络图直接交给 <image> 加载（与流程地图、AI 配图一致，真机稳）。
+    // 原先用 downloadFile + saveFile 把大图下到本地再显示，那条链路在真机上不稳
+    // （saveFile 已废弃 + 大图），表现为"电脑能显示、手机地图空白"——其它同域名网络图
+    // 都正常，唯独这里绕了下载。长按保存仍用 getImageInfo(网络url) 处理，不受影响。
+    return Promise.resolve(this.normalizeImageUrl(imageUrl));
   },
 
   onMapLoad() {
