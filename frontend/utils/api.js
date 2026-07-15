@@ -240,6 +240,11 @@ const adminLogin = async (username, password) => {
   return { ...result, token };
 };
 
+const checkAdminEligibility = async () => request({
+  method: 'GET',
+  path: '/api/admin/eligibility'
+});
+
 const getAdminStats = async (userOrder = 'desc') => {
   const [stats, users] = await Promise.all([
     adminRequest('GET', '/api/admin/stats'),
@@ -460,6 +465,7 @@ module.exports = {
   deleteSave,
   getProcessMarkers,
   adminLogin,
+  checkAdminEligibility,
   getAdminStats,
   getAdminStories,
   exportUsers,
