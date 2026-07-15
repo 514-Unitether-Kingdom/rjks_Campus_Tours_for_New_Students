@@ -174,7 +174,29 @@ Page({
     loading: true,
     loadError: ''
   },
-  onShow() { this.loadDashboard(); },
+  onShow() {
+    if (!wx.getStorageSync('adminToken')) {
+      this.clearDashboardData();
+      api.redirectToAdminLogin();
+      return;
+    }
+    this.loadDashboard();
+  },
+  clearDashboardData() {
+    this.setData({
+      stats: { totalUsers: 0, completedStories: 0, totalBadges: 0 },
+      users: [],
+      detailUser: null,
+      userDetailVisible: false,
+      storyGroups: [],
+      adminStorySummary: '',
+      previewVisible: false,
+      previewStory: null,
+      previewNode: null,
+      exportTextVisible: false,
+      exportTextContent: ''
+    });
+  },
   getCompletedFakeStoryIds() {
     const ids = wx.getStorageSync(COMPLETED_FAKE_STORY_KEY);
     return Array.isArray(ids) ? ids : [];
@@ -207,7 +229,15 @@ Page({
         loading: false
       });
     } catch (error) {
-      this.setData({ loading: false, loadError: error.message || '后台数据加载失败' });
+      this.clearDashboardData();
+      if (error.code === 1002 || error.code === 1003) {
+        this.setData({ loading: false, loadError: '登录已过期，请重新登录' });
+        return;
+      }
+      this.setData({
+        loading: false,
+        loadError: error.code === 1004 ? '无访问权限' : (error.message || '后台数据加载失败')
+      });
     }
   },
   switchTab(e) { this.setData({ activeTab: e.currentTarget.dataset.tab }); },

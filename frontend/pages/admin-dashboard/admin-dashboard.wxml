@@ -48,7 +48,7 @@
       <view class="user-row" data-testid="admin-user-row" wx:for="{{users}}" wx:key="id" bindtap="openUserDetail" data-id="{{item.id}}">
         <view>
           <text class="user-name">{{item.name || '未完善资料'}}</text>
-          <text>{{item.college || '-'}} · {{item.major || '-'}} · 注册 {{item.registerTimeText}}</text>
+          <text>{{item.gender || '-'}} · {{item.grade || '-'}} · {{item.college || '-'}} · {{item.major || '-'}} · 注册 {{item.registerTimeText}}</text>
         </view>
         <text>{{item.completedStories}} / {{item.totalBadges}}</text>
       </view>
@@ -115,7 +115,7 @@
       <view class="preview-head">
         <view>
           <text class="preview-title">{{detailUser.name || '未完善资料'}}</text>
-          <text class="preview-subtitle">{{detailUser.college || '-'}} · {{detailUser.major || '-'}}</text>
+          <text class="preview-subtitle">{{detailUser.gender || '-'}} · {{detailUser.grade || '-'}} · {{detailUser.college || '-'}} · {{detailUser.major || '-'}}</text>
           <text class="preview-subtitle">注册时间：{{detailUser.registerTimeText}}</text>
         </view>
         <text class="preview-close" data-testid="admin-user-detail-close" bindtap="closeUserDetail">关闭</text>

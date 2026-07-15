@@ -2,6 +2,10 @@ const api = require('../../utils/api');
 
 const MAP_CACHE_KEY = 'activeMapCache';
 const MAP_CACHE_AGE = 24 * 60 * 60 * 1000;
+const MAP_LOAD_TIMEOUT = 5000;
+const LONG_PRESS_DELAY = 500;
+const LONG_PRESS_MOVE_LIMIT = 10;
+const SCALE_GUARD_TIME = 800;
 const DEFAULT_MAP = {
   name: '平乐园校区平面图',
   imageUrl: '/images/campus_map_full.png',
@@ -22,6 +26,11 @@ Page({
     this.loadMap();
   },
 
+  onUnload() {
+    this.cancelLongPress();
+    this.clearMapLoadTimer();
+  },
+
   async loadMap() {
     const token = wx.getStorageSync('token');
     if (!token) {
@@ -35,6 +44,7 @@ Page({
       imageReady: false,
       cacheTip: ''
     });
+    this.startMapLoadTimer();
 
     const cache = wx.getStorageSync(MAP_CACHE_KEY);
     if (this.isFreshCache(cache)) {
@@ -85,6 +95,27 @@ Page({
       loadError: false,
       imageReady: false
     });
+    this.startMapLoadTimer();
+  },
+
+  clearMapLoadTimer() {
+    if (this.mapLoadTimer) {
+      clearTimeout(this.mapLoadTimer);
+      this.mapLoadTimer = null;
+    }
+  },
+
+  startMapLoadTimer() {
+    this.clearMapLoadTimer();
+    this.mapLoadTimer = setTimeout(() => {
+      if (!this.data.imageReady && this.data.loading) {
+        this.setData({
+          loading: false,
+          loadError: true
+        });
+        wx.showToast({ title: '加载超时，请稍后重试', icon: 'none' });
+      }
+    }, MAP_LOAD_TIMEOUT);
   },
 
   normalizeImageUrl(url) {
@@ -120,6 +151,7 @@ Page({
   },
 
   onMapLoad() {
+    this.clearMapLoadTimer();
     this.setData({
       loading: false,
       loadError: false,
@@ -128,6 +160,7 @@ Page({
   },
 
   onMapError() {
+    this.clearMapLoadTimer();
     this.setData({
       loading: false,
       loadError: true,
@@ -140,7 +173,74 @@ Page({
     this.loadMap();
   },
 
-  onMapLongPress() {
+  cancelLongPress() {
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+  },
+
+  blockLongPress() {
+    this.cancelLongPress();
+    this.touchStartPoint = null;
+    this.longPressBlockedUntil = Date.now() + SCALE_GUARD_TIME;
+  },
+
+  onMapScale() {
+    this.blockLongPress();
+  },
+
+  onMapTouchStart(e) {
+    this.cancelLongPress();
+
+    if (!e.touches || e.touches.length !== 1 || Date.now() < (this.longPressBlockedUntil || 0)) {
+      this.blockLongPress();
+      return;
+    }
+
+    const touch = e.touches[0];
+    this.touchStartPoint = {
+      x: touch.clientX,
+      y: touch.clientY
+    };
+
+    this.longPressTimer = setTimeout(() => {
+      this.longPressTimer = null;
+      this.openSaveMenu();
+    }, LONG_PRESS_DELAY);
+  },
+
+  onMapTouchMove(e) {
+    if (!this.touchStartPoint) return;
+
+    if (!e.touches || e.touches.length !== 1) {
+      this.blockLongPress();
+      return;
+    }
+
+    const touch = e.touches[0];
+    const dx = Math.abs(touch.clientX - this.touchStartPoint.x);
+    const dy = Math.abs(touch.clientY - this.touchStartPoint.y);
+    if (dx > LONG_PRESS_MOVE_LIMIT || dy > LONG_PRESS_MOVE_LIMIT) {
+      this.cancelLongPress();
+    }
+  },
+
+  onMapTouchEnd() {
+    this.cancelLongPress();
+    this.touchStartPoint = null;
+  },
+
+  onMapTouchCancel() {
+    this.cancelLongPress();
+    this.touchStartPoint = null;
+  },
+
+  openSaveMenu() {
+    if (Date.now() < (this.longPressBlockedUntil || 0)) {
+      return;
+    }
+
     if (this.data.loading || !this.data.imageReady) {
       wx.showToast({ title: '图片加载中，请稍后重试', icon: 'none' });
       return;
