@@ -1,15 +1,17 @@
 const api = require('../../utils/api');
 
-const MAP_CACHE_KEY = 'activeMapCache';
+// 缓存键升版：作废旧缓存（此前可能缓存了占位图 campus_map_full.png，导致改了图源仍显示占位图）
+const MAP_CACHE_KEY = 'activeMapCache_v2';
 const MAP_CACHE_AGE = 24 * 60 * 60 * 1000;
 const MAP_LOAD_TIMEOUT = 12000;
 const LONG_PRESS_DELAY = 500;
 const LONG_PRESS_MOVE_LIMIT = 10;
 const SCALE_GUARD_TIME = 800;
+// 默认/兜底也用服务器真地图（不再用占位图 campus_map_full.png，避免任何情况下露出"地图主体"占位）
 const DEFAULT_MAP = {
   name: '平乐园校区平面图',
-  imageUrl: '/images/campus_map_full.png',
-  version: 'local'
+  imageUrl: 'https://ai.tanxiaozhilv.uk/maps/map2.png',
+  version: 'v2'
 };
 
 Page({
