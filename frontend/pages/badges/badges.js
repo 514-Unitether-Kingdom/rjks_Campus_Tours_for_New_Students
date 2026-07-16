@@ -6,10 +6,7 @@ Page({
   async loadBadges() {
     this.setData({ loading: true, loadError: '' });
     try {
-      const badges = (await api.getUserBadges()).map((badge) => ({
-        ...badge,
-        icon: ['badge_card', 'badge_print'].includes(badge.id) ? '/images/badge_gray.png' : badge.icon
-      }));
+      const badges = await api.getUserBadges();
       const obtainedCount = badges.filter((badge) => badge.obtained).length;
       this.setData({ badges, obtainedCount, loading: false });
       wx.setStorageSync('badgeCount', obtainedCount);
