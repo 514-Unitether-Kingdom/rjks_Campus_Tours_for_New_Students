@@ -143,13 +143,15 @@ INSERT IGNORE INTO process_markers (code, name, description, steps, position_x, 
 
 -- ---------------------------------------------
 -- 校园地图
---   高清底图 map2.png 已移到后端 public/maps/ 经 HTTPS 托管（不占小程序主包）。
---   校园地图页(map)与流程地图(process-map)都用这张服务器图；原 /images/campus_map_full.png
---   只是占位图（图上写着"地图主体"），不再使用。
+--   底图放后端 public/maps/ 经 HTTPS 托管（不占小程序主包）。
+--   校园地图页(map) 用手机友好版 map2_view.png（2000×1345、293KB）——全尺寸 map2.png（2884×1940、
+--   1.24MB）在真机上经隧道加载超时，故单独出一张压缩图给这个页。
+--   流程地图(process-map) 仍用全尺寸 map2.png（它的地点高亮坐标依赖 2884×1940，别改）。
+--   原 /images/campus_map_full.png 只是占位图（图上写着"地图主体"），不再使用。
 --   ⚠ 真机需把 ai.tanxiaozhilv.uk 加进小程序后台 downloadFile 合法域名。
 -- ---------------------------------------------
 INSERT IGNORE INTO campus_maps (name, image_url, version, is_active) VALUES
-('平乐园校区平面图', 'https://ai.tanxiaozhilv.uk/maps/map2.png', 'v2', 1);
--- 幂等修正：已建库（image_url 仍是旧占位图）重跑本文件时一并纠正
-UPDATE campus_maps SET image_url = 'https://ai.tanxiaozhilv.uk/maps/map2.png', version = 'v2'
- WHERE is_active = 1 AND image_url = '/images/campus_map_full.png';
+('平乐园校区平面图', 'https://ai.tanxiaozhilv.uk/maps/map2_view.png', 'v3', 1);
+-- 幂等修正：已建库（image_url 仍是占位图或旧 map2.png）重跑本文件时一并纠正到手机友好版
+UPDATE campus_maps SET image_url = 'https://ai.tanxiaozhilv.uk/maps/map2_view.png', version = 'v3'
+ WHERE is_active = 1 AND image_url IN ('/images/campus_map_full.png', 'https://ai.tanxiaozhilv.uk/maps/map2.png');
