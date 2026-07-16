@@ -1,6 +1,8 @@
 const api = require('../../utils/api');
 
-const MAP_CACHE_KEY = 'activeMapCache';
+// 缓存键带版本号：地图图源换过(占位图→map2_view.png)，旧设备缓存里可能还存着
+// 修复前的占位图地址且 24h 未过期，会一直显示旧图。升版本号让旧缓存自动作废、重新拉取。
+const MAP_CACHE_KEY = 'activeMapCache_v3';
 const MAP_CACHE_AGE = 24 * 60 * 60 * 1000;
 const MAP_LOAD_TIMEOUT = 12000;
 const LONG_PRESS_DELAY = 500;

@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "校园地图"
+  "navigationBarTitleText": "校园地图",
+  "enablePullDownRefresh": true
 }
