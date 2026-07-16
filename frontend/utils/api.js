@@ -115,7 +115,7 @@ const normalizeProfile = (profile = {}) => ({
   college: profile.college || '',
   major: profile.major || '',
   registerTime: profile.register_time || profile.registerTime || '',
-  avatarUrl: profile.avatarUrl || '/images/default_avatar.png'
+  avatarUrl: profile.avatarUrl || (profile.gender === '女' ? '/images/avatar_female.png' : profile.gender === '男' ? '/images/avatar_male.png' : '/images/default_avatar.png')
 });
 
 const cacheProfile = (profile) => {

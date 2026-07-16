@@ -61,7 +61,7 @@ Page({
         name: userInfo.name || '新同学',
         college: userInfo.college || '未设置学院',
         grade: userInfo.grade || '未设置年级',
-        avatarUrl: userInfo.avatarUrl || '/images/default_avatar.png'
+        avatarUrl: userInfo.avatarUrl || (userInfo.gender === '女' ? '/images/avatar_female.png' : userInfo.gender === '男' ? '/images/avatar_male.png' : '/images/default_avatar.png')
       }
     });
   },
