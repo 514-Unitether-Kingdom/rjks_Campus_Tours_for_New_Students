@@ -1,4 +1,4 @@
-const BASE_URL = 'http://82.157.17.90:3000';
+const BASE_URL = 'https://power-titles-hawaii-bingo.trycloudflare.com';
 const REQUEST_TIMEOUT = 10000;
 
 const getBaseUrl = () => wx.getStorageSync('apiBaseUrl') || BASE_URL;
