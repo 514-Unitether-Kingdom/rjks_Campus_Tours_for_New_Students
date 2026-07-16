@@ -58,6 +58,14 @@ app.use('/maps', express.static(path.join(__dirname, 'public', 'maps'), {
   setHeaders: (res) => res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
 }));
 
+// 2.7 剧情背景/人物立绘静态托管：/story-bg/xxx.jpg → backend/public/story-bg/
+// 剧情实景背景照（按地点）与学姐立绘放服务器，同样避免占小程序主包。
+// story_nodes.bg_image_url / character_image_url 指向这里的 HTTPS 地址。
+app.use('/story-bg', express.static(path.join(__dirname, 'public', 'story-bg'), {
+  maxAge: '7d',
+  setHeaders: (res) => res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
+}));
+
 // 3. 注册路由（前端访问的就是这些地址）
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
