@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+const BASE_URL = 'https://power-titles-hawaii-bingo.trycloudflare.com';
+=======
 const BASE_URL = 'https://ai.tanxiaozhilv.uk';
+>>>>>>> main
 const REQUEST_TIMEOUT = 10000;
 
 const getBaseUrl = () => wx.getStorageSync('apiBaseUrl') || BASE_URL;

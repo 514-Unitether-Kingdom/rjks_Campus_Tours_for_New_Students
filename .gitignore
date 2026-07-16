@@ -19,3 +19,7 @@ Thumbs.db
 frontend/project.private.config.json
 # 隧道工具（体积大，各自下载）
 cloudflared.exe
+project.config.json
+project.private.config.json
+frontend/project.config.json
+frontend/project.private.config.json
