@@ -11,6 +11,29 @@ const { signAdminToken } = require('../utils/jwt');
 const C = require('../utils/constants');
 const dto = require('../utils/dto');
 const fmt = require('../utils/format');
+const adminWhitelist = require('../services/adminWhitelist');
+
+// =============================================================
+// 管理员入口可见性（T-隔离，后端 B）
+// =============================================================
+
+// GET /api/admin/eligibility  —— 需用户 token（挂在 user auth 中间件上）
+//
+// 仅供前端决定"我的"页要不要显示"数据管理"入口，返回 { canAdmin }。
+//
+// ⚠ 安全定位：这只是 UI 可见性开关，**不下发任何管理权限**。
+//   真正进后台仍需 adminToken（管理员密码登录换取），后台每个接口都由 adminAuth 校验。
+//   普通用户即使伪造前端把入口显示出来，也调不动任何 /api/admin/* 接口。
+//   因此本接口天然安全：泄露 canAdmin=true 也无法越权。
+exports.eligibility = async (req, res, next) => {
+  try {
+    // req.user 由 user auth 中间件注入，是 users 表整行（含 openid）
+    const canAdmin = adminWhitelist.isAdminOpenid(req.user.openid);
+    res.success({ canAdmin });
+  } catch (err) {
+    next(err);
+  }
+};
 
 // =============================================================
 // 管理员登录（T6，后端 A 实现，此处保持原样）

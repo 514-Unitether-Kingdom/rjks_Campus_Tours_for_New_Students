@@ -7,7 +7,8 @@ Page({
       college: '',
       grade: '',
       avatarUrl: ''
-    }
+    },
+    showAdminEntry: false
   },
 
   onLoad() {
@@ -16,6 +17,7 @@ Page({
 
   onShow() {
     this.loadUserInfo();
+    this.loadAdminEntry();
   },
 
   async loadUserInfo() {
@@ -35,6 +37,21 @@ Page({
       if (!cached.name) {
         wx.showToast({ title: '用户信息加载失败', icon: 'none' });
       }
+    }
+  },
+
+  async loadAdminEntry() {
+    this.setData({ showAdminEntry: false });
+    const token = wx.getStorageSync('token');
+    if (!token) {
+      return;
+    }
+
+    try {
+      const result = await api.checkAdminEligibility();
+      this.setData({ showAdminEntry: !!(result && result.canAdmin) });
+    } catch (error) {
+      this.setData({ showAdminEntry: false });
     }
   },
 
@@ -61,6 +78,12 @@ Page({
     });
   },
 
+  goAdmin() {
+    wx.navigateTo({
+      url: '/pages/admin-login/admin-login'
+    });
+  },
+
   handleLogout() {
     wx.showModal({
       title: '确定退出登录？',
@@ -75,6 +98,7 @@ Page({
   },
 
   doLogout() {
+    this.setData({ showAdminEntry: false });
     api.logout();
     wx.showToast({
       title: '已安全退出',

@@ -31,6 +31,14 @@
       <text class="menu-arrow">›</text>
     </view>
 
+    <view class="menu-item" data-testid="my-admin-entry" wx:if="{{showAdminEntry}}" bindtap="goAdmin">
+      <view class="menu-left">
+        <text class="menu-icon">🛠️</text>
+        <text class="menu-label">数据管理</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
     <!-- 登出按钮 -->
     <view class="menu-item menu-item-danger" data-testid="my-logout-button" bindtap="handleLogout">
       <view class="menu-left">

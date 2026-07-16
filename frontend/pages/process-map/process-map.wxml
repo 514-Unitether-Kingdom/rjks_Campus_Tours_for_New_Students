@@ -3,8 +3,8 @@
   <view class="loading" wx:if="{{loading}}">正在标记可体验的流程…</view>
   <view class="notice" wx:elif="{{loadError}}"><text>{{loadError}}</text><text class="retry" data-testid="process-map-retry" bindtap="loadMarkers">重新加载</text></view>
   <view class="map-card" wx:else>
-    <image class="campus-map" src="/images/campus_map_full.png" mode="widthFix"></image>
-    <view class="map-marker" data-testid="process-map-marker" wx:for="{{markers}}" wx:key="id" style="left: {{item.positionX}}%; top: {{item.positionY}}%;" bindtap="selectMarker" data-id="{{item.id}}"><view class="marker-pin {{item.completed ? 'completed' : ''}}"><text>{{item.completed ? '✓' : '!'}}</text></view><text class="marker-label">{{item.name}}</text></view>
+    <image class="campus-map" src="{{mapUrl}}" mode="widthFix"></image>
+    <view class="map-marker" data-testid="process-map-marker" wx:for="{{markers}}" wx:key="id" style="left: {{item.mapPositionX || item.positionX}}%; top: {{item.mapPositionY || item.positionY}}%;" bindtap="selectMarker" data-id="{{item.id}}"><view class="marker-pin {{item.completed ? 'completed' : ''}}"><text>{{item.completed ? '✓' : '!'}}</text></view><text class="marker-label">{{item.name}}</text></view>
     <view class="empty-map" wx:if="{{markers.length === 0}}">暂未开放可体验流程</view>
   </view>
 </view>

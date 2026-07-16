@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const BASE_URL = 'https://power-titles-hawaii-bingo.trycloudflare.com';
+=======
+const BASE_URL = 'https://ai.tanxiaozhilv.uk';
+>>>>>>> main
 const REQUEST_TIMEOUT = 10000;
 
 const getBaseUrl = () => wx.getStorageSync('apiBaseUrl') || BASE_URL;
@@ -180,6 +184,13 @@ const getUserBadges = async () => request({
   path: '/api/badges/me'
 });
 
+// 到达剧情指定节点时领取白名单知识徽章；接口幂等，重复调用不会重复发放。
+const obtainBadge = async (code) => request({
+  method: 'POST',
+  path: '/api/badges/obtain',
+  data: { code }
+});
+
 const completeStory = async (userIdOrStoryId, maybeStoryId) => {
   const storyId = maybeStoryId || userIdOrStoryId;
   const result = await request({
@@ -239,6 +250,11 @@ const adminLogin = async (username, password) => {
   getApp().globalData.isAdmin = true;
   return { ...result, token };
 };
+
+const checkAdminEligibility = async () => request({
+  method: 'GET',
+  path: '/api/admin/eligibility'
+});
 
 const getAdminStats = async (userOrder = 'desc') => {
   const [stats, users] = await Promise.all([
@@ -453,6 +469,7 @@ module.exports = {
   getStoryList,
   getStoryNodes,
   getUserBadges,
+  obtainBadge,
   completeStory,
   saveProgress,
   getSaveSlots,
@@ -460,6 +477,7 @@ module.exports = {
   deleteSave,
   getProcessMarkers,
   adminLogin,
+  checkAdminEligibility,
   getAdminStats,
   getAdminStories,
   exportUsers,
